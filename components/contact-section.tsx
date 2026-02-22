@@ -90,7 +90,7 @@ export default function ContactSection() {
           <div className="lg:col-span-2 space-y-4 sm:space-y-5">
             {/* Contact Cards */}
             <a 
-              href="tel:+917620760052"
+              href="tel:+919890072355"
               className="group flex items-start gap-4 p-4 sm:p-5 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 rounded-2xl border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
             >
               <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-primary flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
@@ -104,14 +104,14 @@ export default function ContactSection() {
                   Phone
                 </h3>
                 <p className="text-primary/70 group-hover:text-primary transition-colors text-sm sm:text-base">
-                  +91 7620760052
+                 +91 9890072355
                 </p>
                 <p className="text-primary/40 text-xs mt-1">Available Mon-Fri, 9am-6pm</p>
               </div>
             </a>
 
             <a 
-              href="mailto:umeshwandhare19@gmail.com"
+              href="mailto:niteshduratkar722@gmail.com"
               className="group flex items-start gap-4 p-4 sm:p-5 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 rounded-2xl border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
             >
               <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-primary flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
@@ -125,7 +125,7 @@ export default function ContactSection() {
                   Email
                 </h3>
                 <p className="text-primary/70 group-hover:text-primary transition-colors text-sm sm:text-base break-all">
-                  ketulbolane94@gmail.com
+                 niteshduratkar722@gmail.com
                 </p>
                 <p className="text-primary/40 text-xs mt-1">We'll respond within 24 hours</p>
               </div>

@@ -3,12 +3,12 @@
 export default function WhatsappButton() {
  const handleInquiry = (projectTitle: string) => {
     const message = encodeURIComponent(`Inquire for  for more details `)
-    window.open(`https://wa.me/+917620760052?text=${message}`, "_blank")
+    window.open(`https://wa.me/+919890072355?text=${message}`, "_blank")
   }
   return (
     <div className="fixed bottom-8 right-8 z-40">
       <a
-        href="https://wa.me/+917620760052?text=Enquiry for more details"
+        href="https://wa.me/+919890072355?text=Enquiry for more details"
         target="_blank"
         rel="noopener noreferrer"
         className="relative group"

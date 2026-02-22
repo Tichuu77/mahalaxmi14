@@ -22,7 +22,7 @@ export function Footer() {
               Delivering premium solutions with excellence and innovation.
             </p>
              <p className="text-white/80  mt-2 text-sm leading-relaxed">
-              MAHA RERA NO. A50500041351
+              MAHA RERA NO. A50400041466
             </p>
           </div>
 
@@ -74,15 +74,15 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               <li>
-               Ketul Bolane
+               Nitesh P Duratkar
               </li>
               <li className="flex items-center gap-2 text-white/60 text-sm">
                 <Phone size={14} className="text-white" />
-                +91 7620760052
+                +91 9890072355
               </li>
               <li className="flex items-center gap-2 text-white/60 text-sm">
                 <Mail size={14} className="text-white" />
-                ketulbolane94@gmail.com
+                niteshduratkar722@gmail.com
               </li>
               <li className="flex items-start gap-2 text-white/60 text-sm">
                 <MapPin size={14} className="text-white mt-0.5 flex-shrink-0" />
