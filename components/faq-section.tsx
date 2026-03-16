@@ -194,7 +194,7 @@ export function FAQSection() {
               Contact Us
             </button>
             <a
-              href="tel:+917620760052"
+              href="tel:+919890072355"
               className="px-6 sm:px-8 py-3 bg-white/10 hover:bg-white/20 border-2 border-primary/30 text-primary rounded-xl font-semibold text-sm sm:text-base transition-all hover:scale-105"
             >
               Call Now
