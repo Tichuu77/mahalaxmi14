@@ -14,7 +14,30 @@ type Project = {
 
 const projects = {
   ongoing: [
- 
+    {
+      id: 2,
+      title: "Mahalaxmi Nagar-30",
+      image: "/project_M-30.webp",
+      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 30. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
+      location: "MOUZA - PIPLA",
+      status: "ongoing"
+    },
+    {
+      id: 0,
+      title: "Mahalaxmi Nagar-31",
+      image: "/project_M-31.webp",
+      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 31. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
+      location: "MOUZA - PIPLA",
+      status: "ongoing"
+    },
+    {
+      id: 1,
+      title: "Mahalaxmi Nagar-38",
+      image: "/project_M-38.webp",
+      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 38. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
+      location: "MOUZA - MHASALA",
+      status: "ongoing"
+    },
     {
       id: 3,
       title: "Mahalaxmi Nagar-39",
@@ -41,6 +64,14 @@ const projects = {
       status: "ongoing"
     },
     {
+      id: 4,
+      title: "Mahalaxmi Nagar - 44",
+      image: "/project_M-44.jpg",
+      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 44. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
+      location: "MOUZA - TARODI",
+      status: "ongoing"
+    },
+    {
       id: 7,
       title: "Mahalaxmi Nagar - 45",
       image: "/project_M-45.jpg",
@@ -59,11 +90,27 @@ const projects = {
      {
       id: 9,
       title: "Tattva Apas",
-      image: "/tatava apas.webp",
+      image: "/tatava-apas.webp",
       description: "Tattva Apas, by VCMI Constructions LLP, offers contemporary living with 100 + meticulously crafted apartments. Featuring amenities like landscaped gardens, play areas, and fitness centers, it fosters a vibrant social atmosphere. Seamlessly integrated with surroundings, the complex includes a sprawling public green space spanning 50,000 sq. ft. Emphasizing superior construction and modern aesthetics, Tattva Apas ensures a premium standard of living, ideal for convenience and community. It's more than just a residence; it's a sanctuary where residents thrive amidst modern comforts.",
       location: "MOUZA - BELTARODI",
       status: "ongoing"
     },
+    {
+      id: 10,
+      title: "Mahalaxmi Nagar - 47",
+      image: "/project_M-47.jpg",
+      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 47. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
+      location: "MOUZA - NEW NANDA",
+      status: "ongoing"
+    },
+    {
+      id: 11,
+      title: "Mahalaxmi Nagar - 52",
+      image: "/project_M-52.jpg",
+      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 52. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
+      location: "MOUZA -  DHAMNA",
+      status: "ongoing"
+    }
     
   ],
   completed: [
