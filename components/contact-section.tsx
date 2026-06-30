@@ -7,7 +7,6 @@ export default function ContactSection() {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
-    subject: "",
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -26,7 +25,7 @@ export default function ContactSection() {
     setSubmitStatus("idle")
 
     // Validate required fields
-    if (!formState.name || !formState.email || !formState.subject || !formState.message) {
+    if (!formState.name || !formState.email ||   !formState.message) {
       setSubmitStatus("error")
       setIsSubmitting(false)
       setTimeout(() => setSubmitStatus("idle"), 3000)
@@ -42,7 +41,7 @@ export default function ContactSection() {
 
       if (res.ok) {
         setSubmitStatus("success")
-        setFormState({ name: "", email: "", subject: "", message: "" })
+        setFormState({ name: "", email: "",   message: "" })
         setTimeout(() => setSubmitStatus("idle"), 5000)
       } else {
         setSubmitStatus("error")
@@ -213,22 +212,7 @@ export default function ContactSection() {
                     </div>
                   </div>
 
-                  {/* Subject */}
-                  <div>
-                    <label htmlFor="subject" className="block text-primary font-semibold mb-2 text-sm">
-                      Subject <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      value={formState.subject}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 sm:py-3.5 bg-primary/5 border-2 border-primary/20 rounded-xl text-primary placeholder:text-primary/40 focus:border-primary focus:outline-none transition-all text-sm sm:text-base"
-                      placeholder="How can we help you?"
-                    />
-                  </div>
+                  
 
                   {/* Message */}
                   <div>

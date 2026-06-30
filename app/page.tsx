@@ -19,9 +19,9 @@ export default function Home() {
     <main >
       <Navigation />
       <HeroSection />
-      <AboutSection />
-      <AmenitiesSection />
       <ProjectsSection />
+      <AmenitiesSection />
+      <AboutSection />
       <GallerySection />
       <WhyChooseUsSection />
       <UserGuideSection />
