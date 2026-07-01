@@ -46,6 +46,24 @@ const projects = {
       location: "MOUZA - FETRI",
       status: "ongoing"
     },
+
+    {
+      id: 18,
+      title: "Mahalaxmi Nagar-40",
+      image: "/M-40-PROJECT.webp",
+      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 40. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
+      location: "MOUZA - KOTEWADA",
+      status: "ongoing"
+    },
+
+    {
+      id: 12,
+      title: "Mahalaxmi Nagar - 41",
+      image: "/M-41-PROJECT.webp",
+      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 41. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
+      location: "MOUZA - GUMGAON",
+      status: "ongoing"
+    },
   
     {
       id: 5,
@@ -114,11 +132,39 @@ const projects = {
     
   ],
   completed: [
- 
-  ],
-  upcoming: [
+    { id: 15, title: "Mahalaxmi Nagar - 49", image: "/project_M-49.jpeg", description: "Mahalaxmi Launches New Premium Residential Complex", location: "MOUZA - NCI", status: "completed" },
+    { id: 16,title: "Mahalaxmi Nagar - 37", image: "/M-37-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 37. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
+    { id: 17, title: "Mahalaxmi Nagar - 36", image: "/M-36-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 36. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - PANJARI", status: "completed" },
+    { id: 19, title: "Mahalaxmi Nagar - 35", image: "/M-35-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 35. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
+    { id: 20, title: "Mahalaxmi Nagar - 34", image: "/M-34-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 34. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - BAHADURA", status: "completed" },
+    { id: 21, title: "Mahalaxmi Nagar - 33", image: "/M-33-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 33. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
+    { id: 22, title: "Mahalaxmi Nagar - 29", image: "/M-29-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 29. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - VIHIRGAON", status: "completed" },
+    { id: 23, title: "Mahalaxmi Nagar - 28", image: "/M-28-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 28. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - SONDAPAR", status: "completed" },
+    { id: 24, title: "Mahalaxmi Nagar - 27", image: "/M-27-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 27. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - MOHGAON", status: "completed" },
+    { id: 25, title: "Mahalaxmi Nagar - 26", image: "/M-26-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 26. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
+    { id: 26, title: "Mahalaxmi Nagar - 25", image: "/M-25-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 25. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
+    { id: 27, title: "Mahalaxmi Nagar - 24", image: "/M-24-24PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 24. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
+    { id: 28, title: "Mahalaxmi Nagar - 23", image: "/M-23-24PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 23. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
+    { id: 29, title: "Mahalaxmi Nagar - 22", image: "/M-22-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 22. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - GAVSI MANAPUR", status: "completed" },
+    { id: 30, title: "Mahalaxmi Nagar - 21", image: "/M-21-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 21. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - SHANKARPUR", status: "completed" },
+    { id: 31, title: "Mahalaxmi Nagar - 20", image: "/M-20-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 20. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - BELTARODI", status: "completed" },
+    { id: 32, title: "Mahalaxmi Nagar - 19", image: "/M-19-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 19. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - DONGARGAON", status: "completed" },
+    { id: 33, title: "Mahalaxmi Nagar - 18", image: "/M-18-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 18. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
     
+    { id: 35, title: "Mahalaxmi Nagar - 16", image: "/M-16-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 16. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
+    { id: 36, title: "Mahalaxmi Nagar - 15", image: "/M-15-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 15. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - GOTAL PANJARI", status: "completed" },
+    
+    { id: 38, title: "Mahalaxmi Nagar - 13", image: "/M-13-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 13. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - PANJARI", status: "completed" },
+    { id: 39, title: "Mahalaxmi Nagar - 12", image: "/M-12-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 12. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
+    { id: 40, title: "Mahalaxmi Nagar - 11", image: "/M-11-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 11. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
+    { id: 41, title: "Mahalaxmi Nagar - 10", image: "/M-10-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 10. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
+  ],
+  upcoming: 
+    [
+    { id: 13, title: "Mahalaxmi Nagar - 48", image: "/plotDef.avif", description: "", location: "", status: "upcoming" },
+    { id: 14, title: "Mahalaxmi Nagar - 50", image: "/plotDef.avif", description: "", location: "", status: "upcoming" },
   ]
+  
 }
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
@@ -166,28 +212,18 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           }`}
         />
         
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-        
         {/* Status Badge */}
         <div className="absolute top-3 right-3">
-          <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${statusColors[project.status as keyof typeof statusColors]}`}>
+          <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${statusColors[project.status as keyof typeof statusColors]}`}>
             {statusLabels[project.status as keyof typeof statusLabels]}
           </span>
-        </div>
-
-        {/* Title Overlay on Mobile */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 md:hidden">
-          <h3 className="text-[#C9862b] font-bold text-lg drop-shadow-lg">
-            {project.title}
-          </h3>
         </div>
       </div>
 
       {/* Content */}
       <div className="p-4 md:p-6 relative z-10">
-        {/* Title - Desktop only */}
-        <h3 className="hidden md:block text-xl font-bold text-[#30534A] mb-2 group-hover:text-[#C9862b] transition-colors">
+        {/* Title */}
+        <h3 className="text-xl font-bold text-[#30534A] mb-2 group-hover:text-[#C9862b] transition-colors">
           {project.title}
         </h3>
 
@@ -231,10 +267,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         )}
       </div>
 
-      {/* Corner glow - only on hover */}
-      {isHovered && (
-        <div className="absolute -bottom-2 -right-2 w-20 h-20 bg-[#C9862b]/30 rounded-full blur-xl opacity-100 transition-opacity pointer-events-none"></div>
-      )}
+
     </div>
   )
 }
@@ -247,6 +280,9 @@ export function ProjectsSection() {
 
   // Intersection Observer
   useEffect(() => {
+    // Set to true immediately on mount to guarantee the projects section is visible and animations trigger even if the Intersection Observer fails
+    setIsVisible(true)
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -263,11 +299,22 @@ export function ProjectsSection() {
     return () => observer.disconnect()
   }, [])
 
-  const allProjects = useMemo(() => [
-    ...projects.completed,
-    ...projects.ongoing,
-    ...projects.upcoming,
-  ], [])
+  const allProjects = useMemo(() => {
+    const list = [
+      ...projects.completed,
+      ...projects.ongoing,
+      ...projects.upcoming,
+    ]
+
+    const getProjectNumber = (title: string) => {
+      // Assign Tattva Apas a value of 46.5 to keep it in its original relative position (between Nagar 47 and 46)
+      if (title.toLowerCase().includes("tattva")) return 46.5
+      const match = title.match(/(?:Nagar\s*-\s*|Nagar\s*)(\d+)/i)
+      return match ? parseFloat(match[1]) : 0
+    }
+
+    return list.sort((a, b) => getProjectNumber(b.title) - getProjectNumber(a.title))
+  }, [])
 
   const filteredProjects = useMemo(() =>
     activeTab === "all"
