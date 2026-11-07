@@ -1,204 +1,147 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Award, Users, Building2, CheckCircle2, TrendingUp, Shield } from "lucide-react"
+import { useEffect, useState, useRef, useCallback, useMemo } from "react"
+import { Users, Building2, CheckCircle2, TrendingUp, ShieldCheck, Sparkles, Phone, Award } from "lucide-react"
+
+const TARGETS = { acres: 78, plots: 524, amenities: 30, finance: 90 } as const
+const DURATION = 1800
+const STEPS = 40
 
 export function AboutSection() {
-  const [isVisible, setIsVisible] = useState(false)
-  const [counters, setCounters] = useState({ projects: 0, clients: 0, years: 0, sqft: 0 })
+  const [counters, setCounters] = useState({ acres: 0, plots: 0, amenities: 0, finance: 0 })
+  const sectionRef = useRef<HTMLElement>(null)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const animatedRef = useRef(false)
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true)
-            animateCounters()
-          }
-        })
-      },
-      { threshold: 0.2 }
-    )
-
-    const section = document.getElementById("about")
-    if (section) observer.observe(section)
-
-    return () => observer.disconnect()
+  const animateCounters = useCallback(() => {
+    if (animatedRef.current) return
+    animatedRef.current = true
+    const interval = DURATION / STEPS
+    let cur = { acres: 0, plots: 0, amenities: 0, finance: 0 }
+    timerRef.current = setInterval(() => {
+      cur.acres     = Math.min(cur.acres + TARGETS.acres / STEPS, TARGETS.acres)
+      cur.plots     = Math.min(cur.plots + TARGETS.plots / STEPS, TARGETS.plots)
+      cur.amenities = Math.min(cur.amenities + TARGETS.amenities / STEPS, TARGETS.amenities)
+      cur.finance   = Math.min(cur.finance + TARGETS.finance / STEPS, TARGETS.finance)
+      setCounters({
+        acres: Math.floor(cur.acres),
+        plots: Math.floor(cur.plots),
+        amenities: Math.floor(cur.amenities),
+        finance: Math.floor(cur.finance),
+      })
+      if (cur.acres >= TARGETS.acres && cur.plots >= TARGETS.plots && cur.amenities >= TARGETS.amenities && cur.finance >= TARGETS.finance) {
+        clearInterval(timerRef.current!)
+        setCounters(TARGETS)
+      }
+    }, interval)
   }, [])
 
-  const animateCounters = () => {
-    const targets = { projects: 70, clients: 17000, years: 13, sqft: 500 }
-    const duration = 2000
-    const steps = 60
-    const increment = duration / steps
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => { if (entries[0].isIntersecting) animateCounters() },
+      { threshold: 0.15 }
+    )
+    observer.observe(el)
+    return () => { observer.disconnect(); if (timerRef.current) clearInterval(timerRef.current) }
+  }, [animateCounters])
 
-    let current = { projects: 0, clients: 0, years: 0, sqft: 0 }
-
-    const timer = setInterval(() => {
-      current.projects = Math.min(current.projects + targets.projects / steps, targets.projects)
-      current.clients = Math.min(current.clients + targets.clients / steps, targets.clients)
-      current.years = Math.min(current.years + targets.years / steps, targets.years)
-      current.sqft = Math.min(current.sqft + targets.sqft / steps, targets.sqft)
-
-      setCounters({
-        projects: Math.floor(current.projects),
-        clients: Math.floor(current.clients),
-        years: Math.floor(current.years),
-        sqft: Math.floor(current.sqft)
-      })
-
-      if (
-        current.projects >= targets.projects &&
-        current.clients >= targets.clients &&
-        current.years >= targets.years &&
-        current.sqft >= targets.sqft
-      ) {
-        clearInterval(timer)
-        setCounters(targets)
-      }
-    }, increment)
-  }
-
-  const features = [
-    { icon: Award, text: "Premium Materials", color: "from-primary to-primary" },
-    { icon: Users, text: "Expert Craftsmanship", color: "from-primary to-secondary" },
-    { icon: Shield, text: "Quality Assurance", color: "from-primary/80 to-primary" },
-    { icon: CheckCircle2, text: "Timely Delivery", color: "from-primary to-secondary" },
-    { icon: TrendingUp, text: "Value Appreciation", color: "from-primary/80 to-primary" },
-    { icon: Building2, text: "Modern Architecture", color: "from-primary to-secondary" }
-  ]
-
-  const stats = [
-    { value: counters.projects, suffix: "+", label: "Completed Projects", icon: Building2 },
-    { value: counters.clients, suffix: "+", label: "Happy Families", icon: Users },
-    { value: counters.years, suffix: "+", label: "Years Experience", icon: Award },
-    { value: counters.sqft, suffix: "K+", label: "Sq.Ft Delivered", icon: TrendingUp }
-  ]
+  const pillars = useMemo(() => [
+    { text: "MahaRERA: PP1190002602003" },
+    { text: "NMRDA Sanctioned Layout" },
+    { text: "100% Clear RL Legal Title" },
+    { text: "Bank Loans Up to 90% (SBI/HDFC)" },
+  ], [])
 
   return (
-    <section id="about" className="py-12 md:py-20 lg:py-32 bg-background relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
-      </div>
+    <section
+      id="about"
+      ref={sectionRef}
+      className="py-14 sm:py-20 bg-white border-b border-stone-100"
+    >
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
 
-      <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className={`text-center mb-8 md:mb-16 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          <span className="text-primary font-semibold text-xs md:text-sm uppercase tracking-wider mb-2 block">About Us</span>
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-primary mb-3 md:mb-4 px-4">
-            Where Luxury Meets{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary/80 to-primary">
-              Craftsmanship
-            </span>
-          </h2>
-          <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto"></div>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-6 md:gap-12 lg:gap-16 items-center mb-12 md:mb-20">
-          {/* Left: Image with overlay effects */}
-          <div className={`relative h-[280px] md:h-[400px] lg:h-[500px] rounded-xl md:rounded-2xl overflow-hidden group transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
-            <img 
-              src="/aboutUs.webp" 
-              alt="Mahalaxmi  Infra Premium Projects" 
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          {/* Left Column: Visual Showcase */}
+          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-stone-200">
+            <img
+              src="/m51-reception.jpeg"
+              alt="Mahalaxmi Nagar 51 Anaya Community"
+              className="w-full h-64 sm:h-[400px] object-cover"
+              loading="lazy"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-            
-            {/* Floating badge */}
-            <div className="absolute top-3 right-3 md:top-6 md:right-6 bg-gradient-to-r from-primary to-secondary text-white px-3 py-2 md:px-6 md:py-3 rounded-full shadow-2xl backdrop-blur-sm border border-primary/20 animate-pulse">
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <Award size={16} className="md:w-5 md:h-5" />
-                <span className="font-semibold text-xs md:text-base">RERA Approved</span>
-              </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4 text-white">
+              <span className="inline-block px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold tracking-wider uppercase bg-[#C9862b] text-white mb-1">
+                Developer Showcase
+              </span>
+              <h3 className="text-base sm:text-lg font-bold">
+                Grand Reception &amp; Welcome Lounge
+              </h3>
+              <p className="text-xs text-stone-200">
+                Direct booking with Mahalaxmi Infra · Zero Brokerage
+              </p>
             </div>
           </div>
 
-          {/* Right: Content */}
-          <div className={`transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
-            <p className="text-black text-sm md:text-lg leading-relaxed mb-4 md:mb-6">
-              With over two decades of excellence in real estate development, <span className="text-primary font-semibold">Mahalaxmi  Infra</span> is committed to creating architectural landmarks that blend luxury, sustainability, and innovation in the heart of Nagpur.
-            </p>
-            <p className="text-black text-sm md:text-lg leading-relaxed mb-6 md:mb-8">
-              Our portfolio showcases projects that reflect our dedication to quality craftsmanship, timely delivery, and customer satisfaction. We believe in building not just structures, but <span className="text-primary">thriving communities</span> where families create lasting memories.
-            </p>
-
-            {/* Features Grid - Mobile optimized */}
-            <div className="grid grid-cols-3 md:grid-cols-2 gap-2 md:gap-4 mb-6 md:mb-8">
-              {features.map((feature, idx) => {
-                const Icon = feature.icon
-                return (
-                  <div
-                    key={idx}
-                    className="group flex flex-col md:flex-row items-center gap-2 md:gap-3 p-2.5 md:p-4 bg-white/5 rounded-lg border border-white/10 hover:border-primary/50 transition-all duration-300 hover:bg-white/10 hover:scale-105"
-                    style={{ animationDelay: `${idx * 100}ms` }}
-                  >
-                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center flex-shrink-0 group-hover:rotate-12 transition-transform`}>
-                      <Icon size={14} className="md:w-[18px] md:h-[18px] text-white" />
-                    </div>
-                    <span className="text-black text-[10px] md:text-sm font-medium text-center md:text-left leading-tight">{feature.text}</span>
-                  </div>
-                )
-              })}
+          {/* Right Column: Vision & Trust */}
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C9862b]/15 text-[#a86a1a] text-xs font-bold uppercase tracking-wider mb-3">
+              <Sparkles size={13} className="text-[#C9862b]" />
+              THE VISION BEHIND ANAYA
             </div>
 
-            {/* CTA Button */}
-            <a href="#projects" className="group inline-flex px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white rounded-lg font-semibold transition-all duration-300 items-center gap-2 shadow-lg hover:shadow-primary/50 hover:shadow-2xl hover:scale-105 text-sm md:text-base">
-              Explore Our Projects
-              <svg className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-          </div>
-        </div>
+            <h2
+              className="text-2xl sm:text-4xl font-extrabold text-[#1e3831] leading-tight mb-4"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+            >
+              Nagpur’s Premier <span style={{ color: "#C9862b" }}>Gated Plotted</span> Township
+            </h2>
 
-        {/* Stats Counter Section - Mobile optimized */}
-        <div className={`grid grid-cols-2 gap-3 md:gap-6 transition-all duration-1000 delay-400 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          {stats.map((stat, idx) => {
-            const Icon = stat.icon
-            return (
-              <div
-                key={idx}
-                className="relative p-3 md:p-6 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl md:rounded-2xl border border-white/10 hover:border-primary/50 transition-all duration-300 hover:scale-105 group overflow-hidden"
-              >
-                {/* Background glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-2 md:mb-3">
-                    <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center group-hover:rotate-12 transition-transform">
-                      <Icon size={16} className="md:w-6 md:h-6 text-white" />
-                    </div>
-                  </div>
-                  <div className="text-2xl md:text-4xl font-bold text-black mb-0.5 md:mb-1">
-                    {stat.value}
-                    <span className="text-primary">{stat.suffix}</span>
-                  </div>
-                  <p className="text-black text-[10px] md:text-sm font-medium">{stat.label}</p>
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed mb-4">
+              <strong>Mahalaxmi Nagar 51 — Anaya</strong> is an exclusive 78-acre residential plotted development situated at <strong className="text-stone-800">Mouza Sumthana</strong>, directly on the fast-growing Samruddhi Mahamarg Corridor.
+            </p>
+
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed mb-6">
+              Planned with an emphasis on low-density living, lush green open spaces, wide concrete avenues, and active sports recreation including box cricket &amp; football turfs, a clubhouse, swimming pool, and child daycare. Every plot carries 100% legal compliance with <strong>NMRDA Sanction</strong>, <strong>Clear RL Title</strong>, and <strong>MahaRERA: PP1190002602003</strong>.
+            </p>
+
+            {/* Core Pillars */}
+            <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6">
+              {pillars.map((item) => (
+                <div
+                  key={item.text}
+                  className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs font-semibold text-stone-800"
+                >
+                  <CheckCircle2 size={14} className="text-[#C9862b] shrink-0" />
+                  <span className="truncate">{item.text}</span>
                 </div>
-              </div>
-            )
-          })}
-        </div>
+              ))}
+            </div>
 
-        {/* Trust Badges - Mobile optimized */}
-        <div className={`mt-8 md:mt-16 flex flex-wrap justify-center gap-4 md:gap-8 items-center transition-all duration-1000 delay-600 ${isVisible ? "opacity-100" : "opacity-0"}`}>
-          <div className="flex items-center gap-1.5 md:gap-2 text-primary">
-            <Shield className="text-primary" size={18} />
-            <span className="font-medium text-xs md:text-base">NMRDA Sanctioned</span>
+            {/* Counters */}
+            <div className="grid grid-cols-4 gap-2 sm:gap-3 pt-2">
+              <div className="p-3 rounded-xl bg-[#30534A]/5 text-center">
+                <div className="text-lg sm:text-2xl font-extrabold text-[#1e3831]">{counters.acres}+</div>
+                <div className="text-[9px] sm:text-[10px] text-stone-600 font-bold uppercase mt-0.5">Acres</div>
+              </div>
+              <div className="p-3 rounded-xl bg-[#30534A]/5 text-center">
+                <div className="text-lg sm:text-2xl font-extrabold text-[#1e3831]">{counters.plots}+</div>
+                <div className="text-[9px] sm:text-[10px] text-stone-600 font-bold uppercase mt-0.5">Plots</div>
+              </div>
+              <div className="p-3 rounded-xl bg-[#30534A]/5 text-center">
+                <div className="text-lg sm:text-2xl font-extrabold text-[#1e3831]">{counters.amenities}+</div>
+                <div className="text-[9px] sm:text-[10px] text-stone-600 font-bold uppercase mt-0.5">Amenities</div>
+              </div>
+              <div className="p-3 rounded-xl bg-[#30534A]/5 text-center">
+                <div className="text-lg sm:text-2xl font-extrabold text-[#1e3831]">{counters.finance}%</div>
+                <div className="text-[9px] sm:text-[10px] text-stone-600 font-bold uppercase mt-0.5">Bank Loan</div>
+              </div>
+            </div>
+
           </div>
-          <div className="w-px h-6 md:h-8 bg-white/20"></div>
-          <div className="flex items-center gap-1.5 md:gap-2 text-primary">
-            <CheckCircle2 className="text-primary" size={18} />
-            <span className="font-medium text-xs md:text-base">RERA Approved</span>
-          </div>
-          <div className="w-px h-6 md:h-8 bg-white/20"></div>
-          <div className="flex items-center gap-1.5 md:gap-2 text-primary">
-            <Award className="text-primary" size={18} />
-            <span className="font-medium text-xs md:text-base">ISO Certified</span>
-          </div>
+
         </div>
       </div>
     </section>

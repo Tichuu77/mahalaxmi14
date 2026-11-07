@@ -1,416 +1,276 @@
 "use client"
 
-import { useState, useRef, useEffect, useMemo } from "react"
-import { ArrowRight, MapPin, Phone } from "lucide-react"
+import { useState } from "react"
+import { Phone, ShieldCheck, CheckCircle2, Sparkles, Maximize2, ChevronDown, Building2 } from "lucide-react"
 
-type Project = {
-  id: number
+type PlotCategory = {
+  id: string
   title: string
+  sizeRange: string
+  facing: string
+  priceStarting: string
   image: string
-  description: string
-  location: string
-  status: string
+  tag: string
+  highlights: string[]
 }
 
-const projects = {
-  ongoing: [
-    {
-      id: 0,
-      title: "Mahalaxmi Nagar-30",
-      image: "/project_M-30.webp",
-      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 30. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
-      location: "MOUZA - PIPLA",
-      status: "ongoing"
-    },
-    {
-      id: 1,
-      title: "Mahalaxmi Nagar-31",
-      image: "/project_M-31.webp",
-      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 31. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
-      location: "MOUZA - PIPLA",
-      status: "ongoing"
-    },
-    {
-      id: 2,
-      title: "Mahalaxmi Nagar-38",
-      image: "/project_M-38.webp",
-      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 38. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
-      location: "MOUZA - MHASALA",
-      status: "ongoing"
-    },
-    {
-      id: 3,
-      title: "Mahalaxmi Nagar-39",
-      image: "/ongoingProject5.webp",
-      description: "New project on Katol Road, Fetri (Chicholi), touching Outer Ring Road. Fully developed NMRDA & RL sanctioned.",
-      location: "MOUZA - FETRI",
-      status: "ongoing"
-    },
+const PLOT_COLLECTIONS: PlotCategory[] = [
+  {
+    id: "executive",
+    title: "Executive Villa Plots",
+    sizeRange: "1,130 – 1,500 Sq.Ft",
+    facing: "East / West Facing Available",
+    priceStarting: "Starting ₹35.4 Lakh*",
+    image: "/m51-entrance-gate.jpeg",
+    tag: "Most Popular",
+    highlights: ["9m & 12m Concrete Roads", "Ideal for 3-4 BHK Villas", "Up to 90% Bank Loan"],
+  },
+  {
+    id: "boulevard",
+    title: "Premium Boulevard Plots",
+    sizeRange: "1,800 – 2,500 Sq.Ft",
+    facing: "Central Garden & Park Facing",
+    priceStarting: "Pricing on Request",
+    image: "/m51-clock-tower.jpeg",
+    tag: "Garden Facing",
+    highlights: ["12m & 18m Tree Boulevards", "Direct Park Frontage", "Spacious Private Lawns"],
+  },
+  {
+    id: "clubhouse",
+    title: "Clubhouse Enclave Plots",
+    sizeRange: "1,500 – 2,200 Sq.Ft",
+    facing: "Clubhouse & Turf Facing",
+    priceStarting: "Lifestyle Premium",
+    image: "/m51-football-ground.jpeg",
+    tag: "Amenities Enclave",
+    highlights: ["30-Sec Walk to Pool", "Steps from Sports Turfs", "Children’s Creche Nearby"],
+  },
+  {
+    id: "estate",
+    title: "Royal Estate Corner Plots",
+    sizeRange: "3,000 – 5,000 Sq.Ft",
+    facing: "Double-Side Open Corner",
+    priceStarting: "Flagship Luxury",
+    image: "/m51-reception.jpeg",
+    tag: "Exclusive Release",
+    highlights: ["Dual Road Frontages", "Maximum Privacy", "Perfect for Private Mansions"],
+  },
+]
 
-    {
-      id: 4,
-      title: "Mahalaxmi Nagar-40",
-      image: "/M-40-PROJECT.webp",
-      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 40. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
-      location: "MOUZA - KOTEWADA",
-      status: "ongoing"
-    },
-
-    {
-      id: 5,
-      title: "Mahalaxmi Nagar - 41",
-      image: "/M-41-PROJECT.webp",
-      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 41. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
-      location: "MOUZA - GUMGAON",
-      status: "ongoing"
-    },
-  
-    {
-      id: 6,
-      title: "Mahalaxmi Nagar - 42",
-      image: "/ongoingProject2.webp",
-      description: "Well-connected plots near Jamtha, Wardha Road. NMRDA & RL sanctioned with excellent amenities.",
-      location: "MOUZA - JAMTHA",
-      status: "ongoing"
-    },
-    {
-      id: 7,
-      title: "Mahalaxmi Nagar - 43",
-      image: "/project_43.jpg",
-      description: "Ready-to-move plots behind Royal Gondwana School, Shankarpur. Fully developed with 90% finance.",
-      location: "MOUZA - SHANKARPUR",
-      status: "ongoing"
-    },
-    {
-      id: 8,
-      title: "Mahalaxmi Nagar - 44",
-      image: "/project_M-44.jpg",
-      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 44. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
-      location: "MOUZA - TARODI",
-      status: "ongoing"
-    },
-    {
-      id: 9,
-      title: "Mahalaxmi Nagar - 45",
-      image: "/project_M-45.jpg",
-      description: "Premium plotted development near Samruddhi Mahamarg, close to AIIMS, IIM, MIHAN & D-Mart.",
-      location: "MOUZA - SUMTHANA",
-      status: "ongoing"
-    },
-      {
-      id: 10,
-      title: "Mahalaxmi Nagar - 46",
-      image: "/ongoingProject11.webp",
-      description: "Premium plotted development near Samruddhi Mahamarg, close to AIIMS, IIM, MIHAN & D-Mart.",
-      location: "MOUZA - SUMTHANA",
-      status: "ongoing"
-    },
-     {
-      id: 11,
-      title: "Tattva Apas",
-      image: "/tatava-apas.webp",
-      description: "Tattva Apas, by VCMI Constructions LLP, offers contemporary living with 100 + meticulously crafted apartments. Featuring amenities like landscaped gardens, play areas, and fitness centers, it fosters a vibrant social atmosphere. Seamlessly integrated with surroundings, the complex includes a sprawling public green space spanning 50,000 sq. ft. Emphasizing superior construction and modern aesthetics, Tattva Apas ensures a premium standard of living, ideal for convenience and community. It's more than just a residence; it's a sanctuary where residents thrive amidst modern comforts.",
-      location: "MOUZA - BELTARODI",
-      status: "ongoing"
-    },
-    {
-      id: 12,
-      title: "Mahalaxmi Nagar - 47",
-      image: "/project_M-47.jpg",
-      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 47. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
-      location: "MOUZA - NEW NANDA",
-      status: "ongoing"
-    },
-     { id: 13, title: "Mahalaxmi Nagar - 49", image: "/project_M-49.jpeg", description: "Mahalaxmi Launches New Premium Residential Complex", location: "MOUZA - NCI", status: "completed" },
-    {
-      id: 14,
-      title: "Mahalaxmi Nagar - 52",
-      image: "/project_M-52.jpg",
-      description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 52. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.",
-      location: "MOUZA -  DHAMNA",
-      status: "ongoing"
-    }
-
-    
-  ],
-  completed: [
-    { id: 15,title: "Mahalaxmi Nagar - 37", image: "/M-37-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 37. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
-    { id: 16, title: "Mahalaxmi Nagar - 36", image: "/M-36-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 36. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - PANJARI", status: "completed" },
-    { id: 17, title: "Mahalaxmi Nagar - 35", image: "/M-35-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 35. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
-    { id: 18, title: "Mahalaxmi Nagar - 34", image: "/M-34-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 34. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - BAHADURA", status: "completed" },
-    { id: 19, title: "Mahalaxmi Nagar - 33", image: "/M-33-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 33. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
-    { id: 20, title: "Mahalaxmi Nagar - 29", image: "/M-29-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 29. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - VIHIRGAON", status: "completed" },
-    { id: 21, title: "Mahalaxmi Nagar - 28", image: "/M-28-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 28. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - SONDAPAR", status: "completed" },
-    { id: 22, title: "Mahalaxmi Nagar - 27", image: "/M-27-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 27. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - MOHGAON", status: "completed" },
-    { id: 23, title: "Mahalaxmi Nagar - 26", image: "/M-26-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 26. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
-    { id: 24, title: "Mahalaxmi Nagar - 25", image: "/M-25-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 25. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
-    { id: 25, title: "Mahalaxmi Nagar - 24", image: "/M-24-24PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 24. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
-    { id: 26, title: "Mahalaxmi Nagar - 23", image: "/M-23-24PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 23. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
-    { id: 27, title: "Mahalaxmi Nagar - 22", image: "/M-22-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 22. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - GAVSI MANAPUR", status: "completed" },
-    { id: 28, title: "Mahalaxmi Nagar - 21", image: "/M-21-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 21. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - SHANKARPUR", status: "completed" },
-    { id: 29, title: "Mahalaxmi Nagar - 20", image: "/M-20-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 20. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - BELTARODI", status: "completed" },
-    { id: 30, title: "Mahalaxmi Nagar - 19", image: "/M-19-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 19. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - DONGARGAON", status: "completed" },
-    { id: 31, title: "Mahalaxmi Nagar - 18", image: "/M-18-PROJECT.webp", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 18. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
-    
-    { id: 32, title: "Mahalaxmi Nagar - 16", image: "/M-16-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 16. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
-    { id: 33, title: "Mahalaxmi Nagar - 15", image: "/M-15-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 15. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - GOTAL PANJARI", status: "completed" },
-    
-    { id: 34, title: "Mahalaxmi Nagar - 13", image: "/M-13-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 13. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - PANJARI", status: "completed" },
-    { id: 35, title: "Mahalaxmi Nagar - 12", image: "/M-12-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 12. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
-    { id: 36, title: "Mahalaxmi Nagar - 11", image: "/M-11-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 11. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - JAMTHA", status: "completed" },
-    { id: 37, title: "Mahalaxmi Nagar - 10", image: "/M-10-PROJECT.jpg", description: "Mahalaxmi Developers launched the project Mahalaxmi Nagar 10. The layout is NIT / NMRDA sanctioned with RL. Bank finance is available 75% to 80% from any nationalized bank.", location: "MOUZA - KOTEWADA", status: "completed" },
-  ],
-  upcoming: 
-    [
-    { id: 38, title: "Mahalaxmi Nagar - 48", image: "/plotDef.avif", description: "", location: "", status: "upcoming" },
-    { id: 39, title: "Mahalaxmi Nagar - 50", image: "/plotDef.avif", description: "", location: "", status: "upcoming" },
-    { id: 40, title: "Mahalaxmi Nagar - 51", image: "/plotDef.avif", description: "", location: "", status: "upcoming" },
-  ]
-  
-}
-
-function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  const statusColors = {
-    completed: "bg-green-500/80 text-white border-green-500/40",
-    ongoing: "bg-blue-500/80 text-white border-blue-500/40",
-    upcoming: "bg-[#C9862b]/80 text-white border-[#C9862b]/40",
-  }
-
-  const statusLabels = {
-    completed: "✓ Completed",
-    ongoing: "⚡ Ongoing",
-    upcoming: "🚀 Upcoming",
-  }
-
-  const handleWhatsApp = () => {
-    const message = `Hi, I'm interested in the project "${project.title}" located at ${project.location}. Could you share more details?`
-    const url = `https://wa.me/919890072355?text=${encodeURIComponent(message)}`
-    window.open(url, "_blank")
-  }
-
-  return (
-    <div
-      className="group bg-gradient-to-br from-white/5 to-transparent rounded-xl overflow-hidden border border-[#30534A]/20 hover:border-[#C9862b]/40 hover:shadow-lg hover:shadow-[#30534A]/50 transition-all duration-300 hover:scale-105 relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Shimmer effect - only on hover */}
-      {isHovered && (
-        <div className="absolute inset-0 bg-gradient-to-r from-[#C9862b]/0 via-[#C9862b]/20 to-[#C9862b]/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000 pointer-events-none"></div>
-      )}
-
-      {/* Image Container */}
-      <div className="relative h-48 md:h-64 overflow-hidden bg-black/50">
-        <img
-          src={project.image || "/placeholder.svg"}
-          alt={project.title}
-          loading="lazy"
-          width="400"
-          height="256"
-          className={`w-full h-full object-cover transition-transform duration-500 ${
-            isHovered ? "scale-110" : "scale-100"
-          }`}
-        />
-        
-        {/* Status Badge */}
-        <div className="absolute top-3 right-3">
-          <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${statusColors[project.status as keyof typeof statusColors]}`}>
-            {statusLabels[project.status as keyof typeof statusLabels]}
-          </span>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-4 md:p-6 relative z-10">
-        {/* Title */}
-        <h3 className="text-xl font-bold text-[#30534A] mb-2 group-hover:text-[#C9862b] transition-colors">
-          {project.title}
-        </h3>
-
-        {/* Location */}
-        {project.location && (
-          <div className="flex items-center gap-2 text-[#30534A]/60 mb-3">
-            <MapPin className="w-4 h-4 text-[#C9862b] flex-shrink-0" />
-            <p className="text-sm font-medium">{project.location}</p>
-          </div>
-        )}
-
-        {/* Description */}
-        {project.description && (
-          <p className="text-[#30534A]/60 text-xs md:text-sm mb-4 leading-relaxed line-clamp-2 md:line-clamp-3">
-            {project.description}
-          </p>
-        )}
-
-        {/* Action Button */}
-        <div className="flex gap-2">
-          <button
-            onClick={handleWhatsApp}
-            className="flex-1 bg-gradient-to-r from-[#30534A] to-[#C9862b] text-white py-2.5 md:py-3 px-4 rounded-lg font-semibold hover:shadow-lg hover:shadow-[#30534A]/50 transition-all flex items-center justify-center gap-2 group/btn"
-          >
-            <Phone className="w-4 h-4" />
-            <span className="text-sm md:text-base">Contact Us</span>
-            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-          </button>
-        </div>
-
-        {/* Quick Info Tags */}
-        {project.description && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            <span className="px-2 py-1 bg-[#C9862b]/20 text-[#C9862b] text-xs rounded-full border border-[#C9862b]/30">
-              NMRDA Approved
-            </span>
-            <span className="px-2 py-1 bg-green-500/20 text-green-600 text-xs rounded-full border border-green-500/30">
-              Bank Finance
-            </span>
-          </div>
-        )}
-      </div>
-
-
-    </div>
-  )
-}
+const otherProjectsList = [
+  { title: "Mahalaxmi Nagar-30", location: "MOUZA - PIPLA", status: "Ongoing", img: "/project_M-30.webp" },
+  { title: "Mahalaxmi Nagar-31", location: "MOUZA - PIPLA", status: "Ongoing", img: "/project_M-31.webp" },
+  { title: "Mahalaxmi Nagar-38", location: "MOUZA - MHASALA", status: "Ongoing", img: "/project_M-38.webp" },
+  { title: "Mahalaxmi Nagar-40", location: "MOUZA - KOTEWADA", status: "Ongoing", img: "/M-40-PROJECT.webp" },
+  { title: "Mahalaxmi Nagar-45", location: "MOUZA - SUMTHANA", status: "Ongoing", img: "/project_M-45.jpg" },
+  { title: "Mahalaxmi Nagar-37", location: "MOUZA - KOTEWADA", status: "Delivered", img: "/M-37-PROJECT.webp" },
+  { title: "Mahalaxmi Nagar-36", location: "MOUZA - PANJARI", status: "Delivered", img: "/M-36-PROJECT.jpg" },
+  { title: "Mahalaxmi Nagar-28", location: "MOUZA - SONDAPAR", status: "Delivered", img: "/M-28-PROJECT.jpg" },
+]
 
 export function ProjectsSection() {
-  const [activeTab, setActiveTab] = useState<"all" | "completed" | "ongoing" | "upcoming">("all")
-  const [isVisible, setIsVisible] = useState(false)
-  const sectionRef = useRef<HTMLElement>(null)
-  const hasAnimated = useRef(false)
+  const [modalImage, setModalImage] = useState<string | null>(null)
+  const [showOther, setShowOther] = useState(false)
 
-  // Intersection Observer
-  useEffect(() => {
-    // Set to true immediately on mount to guarantee the projects section is visible and animations trigger even if the Intersection Observer fails
-    setIsVisible(true)
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasAnimated.current) {
-            setIsVisible(true)
-            hasAnimated.current = true
-          }
-        })
-      },
-      { threshold: 0.1, rootMargin: '100px' }
-    )
-
-    if (sectionRef.current) observer.observe(sectionRef.current)
-    return () => observer.disconnect()
-  }, [])
-
-  const allProjects = useMemo(() => {
-    const list = [
-      ...projects.completed,
-      ...projects.ongoing,
-      ...projects.upcoming,
-    ]
-
-    const getProjectNumber = (title: string) => {
-      // Assign Tattva Apas a value of 46.5 to keep it in its original relative position (between Nagar 47 and 46)
-      if (title.toLowerCase().includes("tattva")) return 46.5
-      const match = title.match(/(?:Nagar\s*-\s*|Nagar\s*)(\d+)/i)
-      return match ? parseFloat(match[1]) : 0
-    }
-
-    return list.sort((a, b) => getProjectNumber(b.title) - getProjectNumber(a.title))
-  }, [])
-
-  const filteredProjects = useMemo(() =>
-    activeTab === "all"
-      ? allProjects
-      : allProjects.filter((project) => project.status === activeTab),
-    [activeTab, allProjects]
-  )
+  const handleInquiry = (title: string, sizeRange: string) => {
+    const text = `Hi, I am interested in ${title} (${sizeRange}) at Mahalaxmi Nagar 51 Anaya. Please share layout details and price breakdown.`
+    window.open(`https://wa.me/919890072355?text=${encodeURIComponent(text)}`, "_blank")
+  }
 
   return (
-    <section ref={sectionRef} id="projects" className="py-20 lg:py-32 bg-white relative overflow-hidden">
-      {/* Static background - removed animations */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-[#C9862b]/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-72 h-72 bg-[#30534A]/20 rounded-full blur-3xl"></div>
-      </div>
+    <section id="projects" className="py-14 sm:py-20 bg-white border-b border-stone-100">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-12 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div>
-            <div className="inline-flex items-center gap-2 mb-3 px-4 py-2 bg-[#C9862b]/20 rounded-full border border-[#C9862b]/40">
-              <div className="w-2 h-2 bg-[#C9862b] rounded-full"></div>
-              <span className="text-[#30534A] font-semibold text-sm uppercase tracking-wider">
-                Portfolio
-              </span>
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C9862b]/15 text-[#a86a1a] text-xs font-bold uppercase tracking-wider mb-2">
+            <Sparkles size={12} className="text-[#C9862b]" />
+            MAHARERA PP1190002602003 · NMRDA
+          </div>
+          <h2
+            className="text-2xl sm:text-4xl font-extrabold text-[#1e3831] leading-tight mb-2"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
+            Plot Collections &amp; <span style={{ color: "#C9862b" }}>Master Plan</span>
+          </h2>
+          <p className="text-xs sm:text-sm text-stone-600">
+            Choose from 1,130 sq.ft to 5,000 sq.ft RERA sanctioned residential plots at Mouza Sumthana.
+          </p>
+        </div>
+
+        {/* Masterplan Preview Banner */}
+        <div className="mb-10 rounded-2xl overflow-hidden bg-stone-900 border border-stone-200 relative group">
+          <div className="relative h-44 sm:h-64 overflow-hidden">
+            <img
+              src="/m51-club-aerial.jpeg"
+              alt="Mahalaxmi Nagar 51 Masterplan"
+              className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+            <div className="absolute inset-0 p-5 sm:p-8 flex flex-col justify-between text-white">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-[#C9862b] bg-black/40 px-3 py-1 rounded-full backdrop-blur-xs">
+                  78-Acre Integrated Township
+                </span>
+                <button
+                  onClick={() => setModalImage("/m51-club-aerial.jpeg")}
+                  className="bg-white/20 hover:bg-[#C9862b] text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 backdrop-blur-xs transition-colors cursor-pointer"
+                >
+                  <Maximize2 size={13} />
+                  <span>Enlarge View</span>
+                </button>
+              </div>
+
+              <div>
+                <h3 className="text-lg sm:text-2xl font-bold mb-1">
+                  Mahalaxmi Nagar 51 · Anaya Master Layout
+                </h3>
+                <p className="text-xs text-stone-300 max-w-lg hidden sm:block">
+                  Low-density master plan with 524 sanctioned villa plots, wide concrete avenues, and central clubhouse amenities.
+                </p>
+              </div>
             </div>
-            <h2 className="text-4xl lg:text-5xl font-bold text-[#30534A] mt-4">Our Projects</h2>
-            <p className="text-[#30534A]/60 text-lg mt-4 max-w-2xl">
-              Explore our portfolio of completed, ongoing, and upcoming developments
-            </p>
           </div>
         </div>
 
-        {/* Filter Tabs */}
-        <div className={`flex flex-wrap justify-center lg:justify-start gap-3 mb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          {[
-            { label: "All Projects", value: "all", icon: "🏢" },
-            { label: "Completed", value: "completed", icon: "✓" },
-            { label: "Ongoing", value: "ongoing", icon: "⚡" },
-            { label: "Upcoming", value: "upcoming", icon: "🚀" },
-          ].map((tab) => (
-            <button
-              key={tab.value}
-              onClick={() => setActiveTab(tab.value as any)}
-              className={`px-5 md:px-6 py-2.5 rounded-full font-semibold transition-all text-sm md:text-base ${
-                activeTab === tab.value
-                  ? "bg-gradient-to-r from-[#30534A] to-[#C9862b] text-white shadow-lg shadow-[#30534A]/50"
-                  : "bg-white/5 text-[#30534A]/70 hover:bg-white/10 border border-[#30534A]/20 hover:border-[#C9862b]/40"
-              }`}
+        {/* 4 Clean Plot Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
+          {PLOT_COLLECTIONS.map((plot) => (
+            <div
+              key={plot.id}
+              className="rounded-2xl overflow-hidden bg-white border border-stone-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
             >
-              <span className="mr-1">{tab.icon}</span>
-              {tab.label}
-            </button>
+              <div>
+                {/* Image */}
+                <div className="relative h-48 overflow-hidden bg-stone-100">
+                  <img
+                    src={plot.image}
+                    alt={plot.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                  <div className="absolute top-3 left-3 bg-[#1e3831] text-[#C9862b] text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                    {plot.tag}
+                  </div>
+                  <div className="absolute bottom-3 left-3 right-3 text-white">
+                    <span className="text-[11px] font-bold text-[#C9862b] block">{plot.sizeRange}</span>
+                    <h4 className="text-base font-bold leading-tight drop-shadow-xs">{plot.title}</h4>
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div className="p-4 space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-stone-100 text-xs">
+                    <span className="text-stone-500">Price Guide:</span>
+                    <span className="font-bold text-[#1e3831]">{plot.priceStarting}</span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    {plot.highlights.map((h) => (
+                      <div key={h} className="flex items-center gap-1.5 text-xs text-stone-600">
+                        <CheckCircle2 size={13} className="text-[#C9862b] shrink-0" />
+                        <span>{h}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <div className="p-4 pt-0">
+                <button
+                  onClick={() => handleInquiry(plot.title, plot.sizeRange)}
+                  className="w-full py-2.5 rounded-xl bg-[#1e3831] hover:bg-[#284a42] text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-xs"
+                >
+                  <Phone size={12} className="text-[#C9862b]" />
+                  <span>Inquire Price &amp; Layout</span>
+                </button>
+              </div>
+            </div>
           ))}
         </div>
 
-        {/* Projects Grid */}
-        {filteredProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {filteredProjects.map((project, index) => (
-              <div
-                key={project.id}
-                className={`transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-                style={{transitionDelay: `${index * 100}ms`}}
-              >
-                <ProjectCard project={project} index={index} />
+        {/* =========================================================================
+            SIDE-LINED SECTION: OTHER PROJECTS BY MAHALAXMI INFRA
+            (Clean collapsible card so it stays out of the way)
+           ========================================================================= */}
+        <div id="other-projects" className="rounded-2xl border border-stone-200 bg-stone-50 overflow-hidden">
+          <button
+            onClick={() => setShowOther(!showOther)}
+            className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer hover:bg-stone-100/60 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#30534A]/10 flex items-center justify-center shrink-0">
+                <Building2 size={18} className="text-[#1e3831]" />
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">🏗️</div>
-            <p className="text-[#30534A]/60 text-lg">
-              No projects available under this category.
-            </p>
-          </div>
-        )}
+              <div>
+                <h4 className="text-sm sm:text-base font-bold text-[#1e3831]">
+                  Explore Other Landmark Projects by Mahalaxmi Infra
+                </h4>
+                <p className="text-xs text-stone-500">
+                  Over 13+ years and 70+ delivered residential plotted developments across Nagpur
+                </p>
+              </div>
+            </div>
+            <div className={`w-8 h-8 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-600 transition-transform ${showOther ? "rotate-180" : ""}`}>
+              <ChevronDown size={16} />
+            </div>
+          </button>
+
+          {showOther && (
+            <div className="p-4 sm:p-6 border-t border-stone-200 bg-white animate-in fade-in duration-200">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                {otherProjectsList.map((p) => (
+                  <div key={p.title} className="rounded-xl border border-stone-200 overflow-hidden bg-stone-50 p-2.5 text-center flex flex-col justify-between">
+                    <div>
+                      <div className="h-24 rounded-lg overflow-hidden mb-2 bg-stone-200">
+                        <img src={p.img} alt={p.title} className="w-full h-full object-cover" loading="lazy" />
+                      </div>
+                      <h5 className="font-bold text-xs text-stone-800 leading-snug">{p.title}</h5>
+                      <p className="text-[10px] text-stone-500 mt-0.5">{p.location}</p>
+                    </div>
+                    <a
+                      href={`https://wa.me/919890072355?text=Hi%2C%20I%20am%20interested%20in%20${encodeURIComponent(p.title)}.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 text-[10px] font-bold text-[#C9862b] hover:underline"
+                    >
+                      Inquire Details →
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
       </div>
 
-      <style jsx>{`
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-
-        .line-clamp-3 {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      `}</style>
+      {/* Fullscreen Masterplan Modal */}
+      {modalImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
+          onClick={() => setModalImage(null)}
+        >
+          <div className="relative max-w-5xl w-full bg-white rounded-2xl overflow-hidden p-3" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setModalImage(null)}
+              className="absolute top-5 right-5 z-10 bg-black/70 hover:bg-black text-white p-2 rounded-full cursor-pointer"
+            >
+              ✕
+            </button>
+            <img
+              src={modalImage}
+              alt="Full Masterplan"
+              className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
+            />
+            <div className="p-2 text-center text-xs text-stone-600 font-semibold">
+              Mahalaxmi Nagar 51 (Anaya) · RERA: PP1190002602003 · NMRDA Sanctioned
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

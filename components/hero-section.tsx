@@ -1,18 +1,13 @@
 "use client"
 
-import { useEffect, useState, useCallback, useMemo } from "react"
-import { ArrowRight, MapPin, Award, TrendingUp } from "lucide-react"
+import { useEffect, useState, useCallback } from "react"
+import { ArrowRight, MapPin, ShieldCheck, Sparkles, Compass, Phone, MessageSquare, CheckCircle2, Calendar } from "lucide-react"
 
-const DESKTOP_STATS = [
-  { value: "70+",     label: "Completed Projects" },
-  { value: "17,000+", label: "Happy Clients"      },
-  { value: "100%",    label: "RERA Approved"       },
-]
-
-const MOBILE_STATS = [
-  { value: "70+",  label: "Projects"      },
-  { value: "17K+", label: "Happy Clients" },
-  { value: "100%", label: "RERA Approved" },
+const TOWNSHIP_SPECS = [
+  { value: "78+",  unit: "Acres",  label: "Township" },
+  { value: "524",  unit: "Plots",  label: "RERA Plots" },
+  { value: "30+",  unit: "Luxury", label: "Amenities" },
+  { value: "90%",  unit: "Loan",   label: "Financing" },
 ]
 
 export function HeroSection() {
@@ -31,14 +26,13 @@ export function HeroSection() {
   const scrollToProjects = useCallback(() => scrollTo("projects"), [scrollTo])
 
   return (
-    <section className="relative min-h-screen flex items-stretch overflow-hidden bg-[#f7f4ef]">
-
-      {/* Background image */}
+    <section className="relative min-h-[88vh] sm:min-h-[92vh] flex items-center pt-28 sm:pt-36 pb-16 sm:pb-20 overflow-hidden bg-[#0c1a15]">
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/hero-bg.jpeg"
-          alt="Mahalaxmi Infra background"
-          className="w-full h-full object-cover object-center"
+          src="/m51-entrance-gate.jpeg"
+          alt="Mahalaxmi Nagar 51 Anaya Township Entrance"
+          className="w-full h-full object-cover object-center scale-105 transition-transform duration-1000 opacity-50"
           fetchPriority="high"
           decoding="sync"
           width={1440}
@@ -46,471 +40,233 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Strong directional overlay — heavy on left (text side), lighter on right */}
+      {/* Modern Directional Lighting Overlay */}
       <div
         className="absolute inset-0 z-[1] pointer-events-none"
         style={{
           background:
-            "linear-gradient(105deg, rgba(5,15,10,0.87) 0%, rgba(5,15,10,0.75) 45%, rgba(5,15,10,0.42) 72%, rgba(5,15,10,0.18) 100%)",
+            "linear-gradient(110deg, rgba(12,26,21,0.96) 0%, rgba(12,26,21,0.88) 50%, rgba(12,26,21,0.65) 85%, rgba(12,26,21,0.45) 100%)",
         }}
       />
 
-      {/* Bottom fade so mobile stats always sit on dark floor */}
-      <div
-        className="absolute inset-x-0 bottom-0 z-[1] pointer-events-none h-44"
-        style={{
-          background: "linear-gradient(to top, rgba(5,15,10,0.65) 0%, transparent 100%)",
-        }}
-      />
+      {/* Main Content Grid */}
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 lg:gap-12">
 
-      {/* Gold vertical rule */}
-      <div
-        className="hidden lg:block absolute top-0 bottom-0 z-[3]"
-        style={{
-          left: "50%",
-          width: "1px",
-          background:
-            "linear-gradient(to bottom, transparent 0%, #C9862b 30%, #C9862b 70%, transparent 100%)",
-          opacity: 0.45,
-        }}
-      />
+          {/* LEFT: Project Headline & Story */}
+          <div className="flex flex-col justify-center">
 
-      {/* Grain texture */}
-      <div
-        className="absolute inset-0 z-[2] pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          opacity: 0.025,
-        }}
-      />
-
-      {/* Main grid */}
-      <div className="relative z-10 w-full max-w-[1440px] mx-auto grid lg:grid-cols-2 items-center px-6 sm:px-10 lg:px-16 py-28 sm:py-32 gap-10 lg:gap-0">
-
-        {/* LEFT — Text */}
-        <div className="flex flex-col justify-center">
-
-          {/* Eyebrow */}
-          <div
-            className={`transition-all duration-500 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-            style={{ transitionDelay: "0ms" }}
-          >
-            <div className="flex items-center gap-3 mb-6 sm:mb-8">
-              <span
-                style={{
-                  display: "block",
-                  width: "36px",
-                  height: "2px",
-                  background: "#C9862b",
-                  flexShrink: 0,
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontSize: "10px",
-                  letterSpacing: "0.30em",
-                  textTransform: "uppercase" as const,
-                  fontWeight: 700,
-                  color: "#C9862b",
-                  textShadow: "0 1px 8px rgba(0,0,0,0.95)",
-                }}
-              >
-                NMRDA Sanctioned · RERA Approved
-              </span>
-            </div>
-          </div>
-
-          {/* Headline */}
-          <div
-            className={`transition-all duration-600 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{ transitionDelay: "80ms" }}
-          >
-            <h1
-              style={{
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: "clamp(2.2rem, 4.5vw, 4.2rem)",
-                fontWeight: 800,
-                lineHeight: 1.07,
-                marginBottom: "1.1rem",
-                /* White base — never lost against any photo */
-                color: "#ffffff",
-                textShadow: "0 2px 20px rgba(0,0,0,1), 0 1px 6px rgba(0,0,0,1)",
-              }}
-            >
-              Mahalaxmi Infra —
-              <br />
-              {/* Orange line */}
-              <span
-                style={{
-                  color: "#C9862b",
-                  textShadow: "0 2px 18px rgba(0,0,0,0.95), 0 0 32px rgba(201,134,43,0.25)",
-                }}
-              >
-                Nagpur's Most
-              </span>
-              <br />
-              {/* Orange + underline */}
-              <span
-                style={{
-                  color: "#C9862b",
-                  position: "relative",
-                  display: "inline-block",
-                  textShadow: "0 2px 18px rgba(0,0,0,0.95), 0 0 32px rgba(201,134,43,0.25)",
-                }}
-              >
-                Trusted Developer
+            {/* Badges */}
+            <div className={`transition-all duration-500 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+              <div className="flex flex-wrap items-center gap-2 mb-4">
                 <span
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold tracking-wider uppercase text-white shadow-xs"
                   style={{
-                    position: "absolute",
-                    bottom: "-4px",
-                    left: 0,
-                    width: "100%",
-                    height: "2.5px",
-                    background:
-                      "linear-gradient(90deg, #C9862b 0%, rgba(201,134,43,0) 100%)",
-                    borderRadius: "2px",
-                  }}
-                />
-              </span>
-            </h1>
-          </div>
-
-          {/* Sub-heading */}
-          <div
-            className={`transition-all duration-600 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{ transitionDelay: "140ms" }}
-          >
-            <p
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: "clamp(0.875rem, 1.05vw, 1rem)",
-                lineHeight: 1.8,
-                /* White body text — fully legible on dark overlay */
-                color: "#ffffff",
-                marginBottom: "1.1rem",
-                maxWidth: "480px",
-                textShadow: "0 1px 10px rgba(0,0,0,0.95)",
-              }}
-            >
-              Mahalaxmi Developers Nagpur — 70+ NMRDA approved residential plot
-              projects, 17,000+ happy families, and over 13 years of transparent
-              real estate excellence.{" "}
-              <strong style={{ color: "#C9862b", fontWeight: 600 }}>
-                Besa · Wardha Road · MIHAN · Samruddhi Circle.
-              </strong>
-            </p>
-          </div>
-
-          {/* Location pill */}
-          <div
-            className={`transition-all duration-600 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{ transitionDelay: "190ms" }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "12px",
-                marginBottom: "2rem",
-                maxWidth: "480px",
-                borderRadius: "12px",
-                padding: "14px 16px",
-                /* Subtle green-tinted glass */
-                background: "rgba(48,83,74,0.30)",
-                border: "1px solid rgba(48,83,74,0.55)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-              }}
-            >
-              <MapPin
-                style={{
-                  width: "16px",
-                  height: "16px",
-                  color: "#C9862b",
-                  marginTop: "2px",
-                  flexShrink: 0,
-                }}
-              />
-              <p
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "12.5px",
-                  /* White so it's readable on the dark green pill */
-                  color: "#ffffff",
-                  lineHeight: 1.7,
-                  margin: 0,
-                  textShadow: "0 1px 6px rgba(0,0,0,0.9)",
-                }}
-              >
-                <strong style={{ color: "#C9862b", fontWeight: 600 }}>Prime Locations: </strong>
-                Besa, Beltarodi, Shankarpur, Wardha Road, Jamtha, Katol Road,
-                Umred Road, Koradi Road &amp; Samruddhi Circle Nagpur
-              </p>
-            </div>
-          </div>
-
-          {/* CTAs */}
-          <div
-            className={`transition-all duration-600 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{
-              transitionDelay: "240ms",
-              display: "flex",
-              gap: "12px",
-              flexWrap: "wrap",
-              marginBottom: "1.5rem",
-            }}
-          >
-            {/* Primary — orange */}
-            <button
-              onClick={scrollToContact}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                background: "#C9862b",
-                border: "none",
-                color: "#ffffff",
-                fontFamily: "'Poppins', sans-serif",
-                fontWeight: 700,
-                fontSize: "13.5px",
-                letterSpacing: "0.02em",
-                padding: "14px 28px",
-                borderRadius: "10px",
-                cursor: "pointer",
-                boxShadow: "0 4px 24px rgba(201,134,43,0.50)",
-                transition: "transform 0.2s, box-shadow 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.04)"
-                e.currentTarget.style.boxShadow = "0 6px 32px rgba(201,134,43,0.65)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)"
-                e.currentTarget.style.boxShadow = "0 4px 24px rgba(201,134,43,0.50)"
-              }}
-              onMouseDown={(e) => { e.currentTarget.style.transform = "scale(0.97)" }}
-              onMouseUp={(e) => { e.currentTarget.style.transform = "scale(1.04)" }}
-            >
-              Contact Us Now
-              <ArrowRight size={16} />
-            </button>
-
-            {/* Secondary — green border, white text */}
-            <button
-              onClick={scrollToProjects}
-              style={{
-                background: "transparent",
-                border: "1.5px solid #30534A",
-                color: "#ffffff",
-                fontFamily: "'Poppins', sans-serif",
-                fontWeight: 700,
-                fontSize: "13.5px",
-                padding: "14px 26px",
-                borderRadius: "10px",
-                cursor: "pointer",
-                transition: "border-color 0.2s, color 0.2s, transform 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#C9862b"
-                e.currentTarget.style.color = "#C9862b"
-                e.currentTarget.style.transform = "scale(1.04)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#30534A"
-                e.currentTarget.style.color = "#ffffff"
-                e.currentTarget.style.transform = "scale(1)"
-              }}
-              onMouseDown={(e) => { e.currentTarget.style.transform = "scale(0.97)" }}
-              onMouseUp={(e) => { e.currentTarget.style.transform = "scale(1.04)" }}
-            >
-              Explore Projects
-            </button>
-          </div>
-
-          {/* Investment highlight */}
-          <div
-            className={`transition-all duration-600 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{ transitionDelay: "300ms", willChange: "transform, opacity" }}
-          >
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "10px",
-                borderRadius: "999px",
-                padding: "10px 20px",
-                background: "rgba(201,134,43,0.15)",
-                border: "1px solid rgba(201,134,43,0.40)",
-              }}
-            >
-              <TrendingUp style={{ width: "15px", height: "15px", flexShrink: 0, color: "#C9862b" }} />
-              <span
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  letterSpacing: "0.04em",
-                  /* White so it pops on any background */
-                  color: "#ffffff",
-                  textShadow: "0 1px 8px rgba(0,0,0,0.9)",
-                }}
-              >
-                Best Investment @ ₹22 Lakh on Samruddhi Circle
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT — Desktop stats card */}
-        <div className="hidden lg:flex flex-col items-end justify-end pb-10 pr-4">
-          <div
-            className={`transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
-            style={{ transitionDelay: "420ms", willChange: "transform, opacity" }}
-          >
-            <div
-              style={{
-                borderRadius: "18px",
-                overflow: "hidden",
-                /* White card — same as original but fully opaque so text is crisp */
-                background: "rgba(255,255,255,0.96)",
-                border: "1px solid rgba(201,134,43,0.22)",
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                minWidth: "280px",
-                boxShadow: "0 8px 40px rgba(0,0,0,0.18)",
-              }}
-            >
-              {/* Card header */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  padding: "14px 22px",
-                  borderBottom: "1px solid rgba(201,134,43,0.14)",
-                  background: "rgba(48,83,74,0.06)",
-                }}
-              >
-                <Award style={{ width: "16px", height: "16px", color: "#C9862b" }} />
-                <span
-                  style={{
+                    background: "linear-gradient(135deg, #C9862b, #a86a1a)",
                     fontFamily: "'Poppins', sans-serif",
-                    fontSize: "10.5px",
-                    letterSpacing: "0.20em",
-                    textTransform: "uppercase" as const,
-                    fontWeight: 700,
-                    /* Dark green on white — very readable */
-                    color: "#30534A",
                   }}
                 >
-                  Certified Excellence
+                  <Sparkles size={12} className="text-white" />
+                  FLAGSHIP TOWNSHIP
+                </span>
+
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-white/90 bg-white/10 border border-white/15 backdrop-blur-xs">
+                  <ShieldCheck size={13} className="text-[#C9862b]" />
+                  MahaRERA: PP1190002602003 · NMRDA
                 </span>
               </div>
+            </div>
 
-              {/* Stat rows */}
-              {DESKTOP_STATS.map((stat, i) => (
+            {/* Headline */}
+            <div
+              className={`transition-all duration-600 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ transitionDelay: "60ms" }}
+            >
+              <h1
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: "clamp(2rem, 4vw, 3.8rem)",
+                  fontWeight: 800,
+                  lineHeight: 1.15,
+                  color: "#ffffff",
+                }}
+                className="mb-3 text-balance"
+              >
+                Mahalaxmi Nagar 51
+                <br />
+                <span style={{ color: "#C9862b" }}>Anaya Township</span>
+              </h1>
+
+              <p className="text-sm sm:text-base text-stone-200/90 leading-relaxed max-w-xl mb-5 font-normal">
+                Nagpur's premier 78-acre low-density gated plotted enclave at <strong className="text-white font-semibold">Mouza Sumthana</strong>, directly touching the <strong className="text-[#C9862b] font-semibold">Samruddhi Mahamarg Corridor</strong>, just 7 mins from MIHAN SEZ &amp; AIIMS.
+              </p>
+            </div>
+
+            {/* Quick Location & Pricing Chips */}
+            <div
+              className={`flex flex-wrap items-center gap-2.5 mb-6 transition-all duration-600 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ transitionDelay: "120ms" }}
+            >
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-white/90 bg-white/10 border border-white/10">
+                <MapPin size={13} className="text-[#C9862b]" />
+                <span>Mouza Sumthana, Nagpur</span>
+              </div>
+
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#C9862b]/20 border border-[#C9862b]/40">
+                <span>Plots from</span>
+                <span className="text-[#C9862b] font-extrabold">₹35.4 Lakh*</span>
+                <span className="text-white/60">|</span>
+                <span className="text-white/80">Token ₹51,000</span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div
+              className={`flex flex-wrap items-center gap-3 mb-8 transition-all duration-600 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ transitionDelay: "180ms" }}
+            >
+              <button
+                onClick={scrollToContact}
+                className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-bold text-xs sm:text-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+                style={{
+                  background: "linear-gradient(135deg, #C9862b 0%, #b8751e 100%)",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                <Calendar size={15} />
+                Book Free Site Visit
+                <ArrowRight size={15} />
+              </button>
+
+              <button
+                onClick={scrollToProjects}
+                className="flex items-center gap-1.5 px-5 py-3 rounded-xl text-white font-semibold text-xs sm:text-sm border border-white/20 hover:border-[#C9862b] hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
+                style={{ fontFamily: "'Poppins', sans-serif" }}
+              >
+                <Compass size={15} className="text-[#C9862b]" />
+                View Plot Layouts
+              </button>
+
+              <a
+                href="tel:+919890072355"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-3 rounded-xl text-white/90 font-medium text-xs sm:text-sm border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+              >
+                <Phone size={14} className="text-[#C9862b]" />
+                +91 9890072355
+              </a>
+            </div>
+
+            {/* Horizontal Specs Bar */}
+            <div
+              className={`grid grid-cols-4 gap-2 sm:gap-3 transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ transitionDelay: "240ms" }}
+            >
+              {TOWNSHIP_SPECS.map((spec) => (
                 <div
-                  key={stat.value}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                    padding: "18px 22px",
-                    borderBottom: i < 2 ? "1px solid rgba(201,134,43,0.10)" : "none",
-                  }}
+                  key={spec.label}
+                  className="p-2 sm:p-3 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xs text-center"
                 >
-                  {/* Orange stat number on white card — full contrast */}
-                  <span
-                    style={{
-                      fontFamily: "'Poppins', sans-serif",
-                      fontSize: "2rem",
-                      fontWeight: 800,
-                      lineHeight: 1,
-                      color: "#C9862b",
-                      minWidth: "96px",
-                    }}
-                  >
-                    {stat.value}
-                  </span>
-                  {/* Dark green label on white card */}
-                  <span
-                    style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: "13.5px",
-                      lineHeight: 1.4,
-                      color: "#30534A",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {stat.label}
-                  </span>
+                  <div className="flex items-baseline justify-center gap-0.5">
+                    <span
+                      className="text-base sm:text-2xl font-extrabold text-[#C9862b]"
+                      style={{ fontFamily: "'Poppins', sans-serif" }}
+                    >
+                      {spec.value}
+                    </span>
+                    <span className="text-[10px] sm:text-xs text-white/70 font-semibold">{spec.unit}</span>
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-stone-300 font-medium mt-0.5 truncate">{spec.label}</div>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Mobile stats */}
-        <div
-          className={`lg:hidden grid grid-cols-3 gap-2 sm:gap-3 -mt-2 transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-          style={{ transitionDelay: "360ms", willChange: "transform, opacity" }}
-        >
-          {MOBILE_STATS.map((stat) => (
-            <div
-              key={stat.value}
-              style={{
-                borderRadius: "12px",
-                padding: "14px 10px",
-                textAlign: "center",
-                /* Opaque white so text is crisp on any photo */
-                background: "rgba(255,255,255,0.95)",
-                border: "1px solid rgba(201,134,43,0.18)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-              }}
-            >
-              {/* Orange number on white */}
-              <div
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontSize: "clamp(1.25rem, 4vw, 1.6rem)",
-                  fontWeight: 800,
-                  color: "#C9862b",
-                  marginBottom: "3px",
-                }}
-              >
-                {stat.value}
+          </div>
+
+          {/* RIGHT: Desktop Highlights Card (Hidden on Mobile to remove clutter) */}
+          <div className="hidden lg:flex flex-col items-end justify-center">
+            <div className="w-full max-w-[370px] rounded-2xl overflow-hidden bg-white shadow-2xl border border-stone-200">
+              {/* Header */}
+              <div className="p-4 bg-stone-50 border-b border-stone-200 flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <img
+                    src="/Malaxmi-Final-Logo.-2png.png"
+                    alt="Mahalaxmi Infra Logo"
+                    className="w-9 h-9 object-contain"
+                  />
+                  <div>
+                    <span className="block text-xs font-extrabold text-[#1e3831] tracking-tight">
+                      MAHALAXMI NAGAR 51
+                    </span>
+                    <span className="block text-[9px] font-bold text-[#C9862b] uppercase tracking-wider">
+                      DIRECT SALES DESK
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  RERA APPROVED
+                </span>
               </div>
-              {/* Green label on white */}
-              <div
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: "10.5px",
-                  color: "#30534A",
-                  fontWeight: 500,
-                  lineHeight: 1.3,
-                }}
-              >
-                {stat.label}
+
+              {/* Specs List */}
+              <div className="p-4 space-y-2 text-xs">
+                <div className="flex justify-between p-2 rounded-lg bg-stone-50 text-stone-700">
+                  <span className="text-stone-500">Project RERA:</span>
+                  <span className="font-bold text-[#1e3831]">PP1190002602003</span>
+                </div>
+                <div className="flex justify-between p-2 rounded-lg bg-stone-50 text-stone-700">
+                  <span className="text-stone-500">Sanction:</span>
+                  <span className="font-bold text-[#C9862b]">NMRDA Sanctioned RL</span>
+                </div>
+                <div className="flex justify-between p-2 rounded-lg bg-stone-50 text-stone-700">
+                  <span className="text-stone-500">Plot Sizes:</span>
+                  <span className="font-bold text-stone-800">1,130 to 5,000 Sq.Ft</span>
+                </div>
+                <div className="flex justify-between p-2 rounded-lg bg-stone-50 text-stone-700">
+                  <span className="text-stone-500">Starting Price:</span>
+                  <span className="font-extrabold text-[#C9862b]">₹35.40 Lakh*</span>
+                </div>
+                <div className="flex justify-between p-2 rounded-lg bg-stone-50 text-stone-700">
+                  <span className="text-stone-500">Bank Loan:</span>
+                  <span className="font-bold text-[#1e3831]">Up to 90% (SBI/HDFC)</span>
+                </div>
+
+                {/* CTAs */}
+                <div className="pt-2 space-y-2">
+                  <button
+                    onClick={scrollToContact}
+                    className="w-full py-2.5 rounded-xl text-white font-bold text-xs bg-[#1e3831] hover:bg-[#284a42] transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Calendar size={13} className="text-[#C9862b]" />
+                    Book Free Site Visit
+                  </button>
+                  <div className="grid grid-cols-2 gap-2">
+                    <a
+                      href="tel:+919890072355"
+                      className="py-2 text-center rounded-xl border border-stone-300 hover:border-[#C9862b] text-stone-800 font-bold text-xs transition-colors flex items-center justify-center gap-1"
+                    >
+                      <Phone size={12} className="text-[#C9862b]" />
+                      Call Direct
+                    </a>
+                    <a
+                      href="https://wa.me/919890072355?text=Hi%2C%20I%20am%20interested%20in%20Mahalaxmi%20Nagar%2051%20Anaya%20plots."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-2 text-center rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-800 font-bold text-xs hover:bg-emerald-100 transition-colors flex items-center justify-center gap-1"
+                    >
+                      <MessageSquare size={12} className="text-emerald-600" />
+                      WhatsApp
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="py-2 px-3 bg-stone-100 text-center text-[10px] text-stone-600 font-medium">
+                Representative: Nitesh P Duratkar · Agent RERA: A50400041466
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* Scroll indicator */}
-      <div
-        className={`absolute bottom-8 left-10 z-10 transition-all duration-700 hidden lg:flex flex-col items-center gap-2 ${isLoaded ? "opacity-100" : "opacity-0"}`}
-        style={{ transitionDelay: "700ms" }}
-      >
-        <div
-          style={{
-            width: "1px",
-            height: "48px",
-            background: "linear-gradient(to bottom, rgba(201,134,43,0.7), transparent)",
-          }}
-        />
+        </div>
       </div>
     </section>
   )

@@ -1,157 +1,86 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { ChevronLeft, ChevronRight, Star } from "lucide-react"
+import { Star, Sparkles, Quote } from "lucide-react"
 
-  const testimonials = [
-    {
-      id: 1,
-      content:
-        "Investing in a by Maha Laxmi Developers transparent process made effortless experience. The best decision I ever made. The local transparent process made it an effortless experience.",
-      name: "Rajkumar Gharjale",
-      location: "Nagpur",
-      image: "/testonomials1.webp",
-      rating: 5,
-    },
-    {
-      id: 2,
-      content:
-        "I wanted to invest in a growing area, and plots in Nagpur Besa seemed perfect. Maha Laxmi Developers exceeded my expectations. Highly recommended!",
-      name: "Priya Shah",
-      location: "Mumbai",
-      image: "/testonomials2.jpg",
-      rating: 5,
-    },
-    {
-      id: 3,
-      content:
-        "Investing in residential plots with Mahalaxmi Developers was one of my best decisions. Their transparency, clear titles, and prompt assistance gave me peace of mind.",
-      name: "Karan Akojwar",
-      location: "Pune",
-      image: "/testonomials3.jpg",
-      rating: 5,
-    },
-  ]
+const testimonials = [
+  {
+    content: "Investing in Mahalaxmi Nagar was an effortless experience. Their transparent process and clear documentation gave me complete confidence. The best decision I ever made.",
+    name: "Rajkumar Gharjale",
+    location: "Nagpur",
+    image: "/testonomials1.webp",
+  },
+  {
+    content: "I wanted to invest in a fast-growing growth corridor, and plots in Mouza Sumthana on Samruddhi Mahamarg are perfect. Mahalaxmi Developers exceeded my expectations.",
+    name: "Priya Shah",
+    location: "Mumbai",
+    image: "/testonomials2.jpg",
+  },
+  {
+    content: "Clear titles, sanctioned RL, and prompt assistance from the sales team gave me real peace of mind. Very smooth bank loan processing too.",
+    name: "Karan Akojwar",
+    location: "Pune",
+    image: "/testonomials3.jpg",
+  },
+]
 
 export function TestimonialsSection() {
-  const [current, setCurrent] = useState(0)
-  const [autoplay, setAutoplay] = useState(true)
-
-  useEffect(() => {
-    if (!autoplay) return
-
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % testimonials.length)
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [autoplay])
-
-  const goToPrevious = () => {
-    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
-    setAutoplay(false)
-  }
-
-  const goToNext = () => {
-    setCurrent((prev) => (prev + 1) % testimonials.length)
-    setAutoplay(false)
-  }
-
   return (
-    <section
-      id="testimonials"
-      className="py-20 lg:py-32 bg-gradient-to-b from-white/20 to-primary/50 relative overflow-hidden"
-    >
-      <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span
-            style={{ fontFamily: "var(--font-heading, Poppins, sans-serif)" }}
-            className="text-primary font-semibold text-sm uppercase tracking-wider"
+    <section id="testimonials" className="py-14 sm:py-20 bg-white border-b border-stone-100">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C9862b]/15 text-[#a86a1a] text-xs font-bold uppercase tracking-wider mb-2">
+            <Sparkles size={12} className="text-[#C9862b]" />
+            CLIENT EXPERIENCES
+          </div>
+          <h2
+            className="text-2xl sm:text-4xl font-extrabold text-[#1e3831] leading-tight mb-2"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            Testimonials
-          </span>
-          <h2 className="text-4xl lg:text-5xl font-bold text-primary mt-4 text-balance">Loved by Clients</h2>
+            Trusted by Over <span style={{ color: "#C9862b" }}>17,000+</span> Buyers
+          </h2>
+          <p className="text-xs sm:text-sm text-stone-600">
+            Real feedback from verified buyers across Nagpur, Mumbai, and Pune.
+          </p>
         </div>
 
-        <div className="relative max-w-3xl mx-auto">
-          {/* Main Testimonial */}
-          <div className="relative h-fit">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={testimonial.id}
-                className={`transition-all duration-500 ${
-                  index === current ? "opacity-100 scale-100" : "absolute opacity-0 scale-95 pointer-events-none"
-                }`}
-              >
-                <div className="bg-gradient-to-br from-white/10 to-white/5 border border-primary/20 rounded-lg p-8 lg:p-12">
-                  {/* Stars */}
-                  <div className="flex gap-1 mb-6">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star key={i} size={18} className="fill-amber-400 text-amber" />
-                    ))}
-                  </div>
+        {/* 3 Review Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {testimonials.map((t) => (
+            <div
+              key={t.name}
+              className="p-5 sm:p-6 rounded-2xl bg-stone-50 border border-stone-200 flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center gap-1 mb-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} size={14} className="fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-xs sm:text-sm text-stone-700 leading-relaxed mb-4 italic">
+                  "{t.content}"
+                </p>
+              </div>
 
-                  {/* Quote */}
-                  <p className="text-lg lg:text-xl text-white/90 mb-8 leading-relaxed italic">"{testimonial.content}"</p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={testimonial.image || "/placeholder.svg"}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-primary"
-                    />
-                    <div>
-                      <p
-                        style={{ fontFamily: "var(--font-heading, Poppins, sans-serif)" }}
-                        className="font-bold text-white"
-                      >
-                        {testimonial.name}
-                      </p>
-                      <p className="text-primary text-sm">{testimonial.location}</p>
-                    </div>
-                  </div>
+              <div className="flex items-center gap-3 pt-3 border-t border-stone-200/60">
+                <img
+                  src={t.image}
+                  alt={t.name}
+                  className="w-10 h-10 rounded-full object-cover border border-stone-300"
+                  loading="lazy"
+                />
+                <div>
+                  <h4 className="font-bold text-xs sm:text-sm text-stone-900 leading-tight">
+                    {t.name}
+                  </h4>
+                  <span className="text-[11px] text-stone-500">{t.location}</span>
                 </div>
               </div>
-            ))}
-          </div>
-
-          {/* Navigation */}
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <button
-              onClick={goToPrevious}
-              className="p-2 rounded-full hover:cursor-pointer border border-primary/50 hover:border-white text-primary hover:textwhite transition-colors"
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            {/* Dots */}
-            <div className="flex gap-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    setCurrent(index)
-                    setAutoplay(false)
-                  }}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === current ? "bg-primary w-6" : "bg-primary/40 hover:bg-primary/60"
-                  }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
-                />
-              ))}
             </div>
-
-            <button
-              onClick={goToNext}
-              className="p-2 hover:cursor-pointer rounded-full border border-primary/50 hover:border-white text-primary hover:textwhite transition-colors"
-              aria-label="Next testimonial"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
+          ))}
         </div>
+
       </div>
     </section>
   )

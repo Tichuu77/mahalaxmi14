@@ -1,173 +1,98 @@
 "use client"
 
-import { useState } from "react"
-import { ChevronDown, HelpCircle, MessageCircle } from "lucide-react"
+import { useState, useCallback, memo } from "react"
+import { ChevronDown, Sparkles, Phone, MessageSquare } from "lucide-react"
 
 const faqs = [
   {
     id: 1,
-    question: "What types of properties do you offer?",
-    answer: "We offer a wide range of residential and commercial plots in prime locations across Nagpur, including Besa, Beltarodi, Shankarpur, Wardha Road, and more. All properties are NMRDA sanctioned and RERA approved.",
-    category: "Properties"
+    question: "Where is Mahalaxmi Nagar 51 (Anaya) located?",
+    answer: "Mahalaxmi Nagar 51 Anaya is located at Mouza Sumthana, Nagpur. It directly touches the Samruddhi Mahamarg Expressway Interchange, just 7 minutes from MIHAN SEZ (Infosys, TCS, Tech Mahindra), 8 minutes from AIIMS & NCI Nagpur, and 5 minutes from D-Mart.",
   },
   {
     id: 2,
-    question: "What is the price range for your plots?",
-    answer: "Our plots start from ₹22 Lakh onwards, depending on the location, size, and amenities. We offer flexible payment plans and financing options to suit various budgets.",
-    category: "Pricing"
+    question: "What is the RERA and NMRDA approval status?",
+    answer: "The project is 100% legally approved and sanctioned by NMRDA (Nagpur Metropolitan Region Development Authority) with clear RL sanctions. Registered under MahaRERA with Project Registration No: PP1190002602003.",
   },
   {
     id: 3,
-    question: "Are all your projects RERA approved?",
-    answer: "Yes, all our projects are 100% RERA approved and NMRDA sanctioned. We ensure complete legal compliance and transparency in all our dealings.",
-    category: "Legal"
+    question: "What plot sizes are available in Mahalaxmi Nagar 51?",
+    answer: "Anaya offers plot sizes from 1,130 sq.ft. up to 5,000 sq.ft. (including 1,130, 1,250, 1,500, 1,800, 2,400, and 5,000 sq.ft). Options include Executive Villa Plots, Central Park-Facing Boulevard Plots, and Dual-Frontage Royal Estate Corner Plots.",
   },
   {
     id: 4,
-    question: "What financing options are available?",
-    answer: "We offer multiple financing options including bank loans, in-house payment plans, and EMI facilities. Our team will help you choose the best option based on your financial situation.",
-    category: "Finance"
+    question: "What is the price range and booking token amount?",
+    answer: "Residential plots start from ₹35.4 Lakh* onwards, depending on plot size, location, and facing. Booking tokens start from ₹51,000, with structured payment stages linked to bank loan disbursements.",
   },
   {
     id: 5,
-    question: "How can I schedule a site visit?",
-    answer: "You can schedule a site visit by contacting us through our website, calling our helpline, or using the WhatsApp button. Our team will confirm your visit within 24 hours and provide all necessary details.",
-    category: "Visits"
+    question: "Is bank loan finance available?",
+    answer: "Yes, up to 85% to 90% bank loan financing is sanctioned and available from leading nationalized and private banks including SBI, HDFC, ICICI, Bank of Baroda, and Axis Bank.",
   },
   {
     id: 6,
-    question: "What amenities are included?",
-    answer: "Our properties come with world-class amenities including 24/7 security, power backup, green spaces, community halls, and more. Specific amenities vary by project location.",
-    category: "Amenities"
+    question: "What amenities are provided in the township?",
+    answer: "Anaya features 30+ modern lifestyle amenities including a Grand Clubhouse, Olympic-length Swimming Pool, Floodlit Football & Box Cricket Sports Turfs, Gymnasium, Children's Play Area, Daycare Crèche, Cement Concrete Roads (9m, 12m, 18m), Underground Electrification, and 24/7 Gated Security.",
+  },
+  {
+    id: 7,
+    question: "How can I book a free site visit?",
+    answer: "You can connect directly with representative Nitesh P Duratkar by calling +91 9890072355 or messaging on WhatsApp. Complimentary pickup and drop site visits are arranged 7 days a week across Nagpur.",
   },
 ]
 
 export function FAQSection() {
   const [openId, setOpenId] = useState<number | null>(1)
-  const [filter, setFilter] = useState<string>("all")
 
-  const filteredFaqs = filter === "all" 
-    ? faqs 
-    : faqs.filter(faq => faq.category.toLowerCase() === filter)
+  const toggle = useCallback((id: number) => {
+    setOpenId((prev) => (prev === id ? null : id))
+  }, [])
 
   return (
-    <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-background/80 to-background relative overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-secondary/20 rounded-full blur-3xl" />
-      </div>
+    <section id="faq" className="py-14 sm:py-20 bg-stone-50 border-b border-stone-100">
+      <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 mb-3 px-4 py-2 bg-primary/10 rounded-full border border-primary/30">
-            <HelpCircle className="w-4 h-4 text-primary" />
-            <span
-              style={{ fontFamily: "var(--font-heading, Poppins, sans-serif)" }}
-              className="text-primary font-semibold text-xs sm:text-sm uppercase tracking-wider"
-            >
-              FAQ
-            </span>
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C9862b]/15 text-[#a86a1a] text-xs font-bold uppercase tracking-wider mb-2">
+            <Sparkles size={12} className="text-[#C9862b]" />
+            FREQUENTLY ASKED QUESTIONS
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mt-4 px-4">
-            Frequently Asked Questions
+          <h2
+            className="text-2xl sm:text-4xl font-extrabold text-[#1e3831] leading-tight mb-2"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
+            Clear Answers &amp; <span style={{ color: "#C9862b" }}>Transparency</span>
           </h2>
-          <p className="text-primary/60 text-sm sm:text-base mt-3 sm:mt-4 max-w-2xl mx-auto px-4">
-            Find answers to common questions about our properties and services
+          <p className="text-xs sm:text-sm text-stone-600">
+            Verified information on project approvals, plot sizes, pricing, and bank financing.
           </p>
         </div>
 
-        {/* Filter Tabs - Mobile Optimized */}
-        <div className="flex gap-2 mb-6 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide px-1">
-          {["all", "properties", "pricing", "legal", "finance"].map((category) => (
-            <button
-              key={category}
-              onClick={() => setFilter(category)}
-              className={`px-3 sm:px-5 py-2 rounded-full font-semibold text-xs sm:text-sm whitespace-nowrap transition-all duration-300 flex-shrink-0 ${
-                filter === category
-                  ? "bg-primary text-white shadow-lg scale-105"
-                  : "bg-white/5 text-primary/70 hover:bg-white/10 border border-primary/20"
-              }`}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {/* FAQ Items */}
-        <div className="space-y-3 sm:space-y-4">
-          {filteredFaqs.map((faq, index) => {
+        {/* Clean Accordion List */}
+        <div className="space-y-3 mb-10">
+          {faqs.map((faq) => {
             const isOpen = openId === faq.id
-            
             return (
               <div
                 key={faq.id}
-                className={`border-2 rounded-xl overflow-hidden transition-all duration-300 ${
-                  isOpen 
-                    ? "border-primary/60 shadow-lg shadow-primary/20 bg-white/5" 
-                    : "border-primary/20 hover:border-primary/40 bg-transparent"
-                }`}
-                style={{ 
-                  animation: 'fadeInUp 0.5s ease-out forwards',
-                  animationDelay: `${index * 50}ms`,
-                  opacity: 0
-                }}
+                className="rounded-2xl overflow-hidden bg-white border border-stone-200 transition-all duration-200"
               >
                 <button
-                  onClick={() => setOpenId(isOpen ? null : faq.id)}
-                  className="w-full px-4 sm:px-6 py-4 sm:py-5 flex items-start gap-3 sm:gap-4 hover:bg-primary/5 transition-colors text-left group"
+                  onClick={() => toggle(faq.id)}
+                  className="w-full text-left p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer"
                 >
-                  {/* Question Number Badge */}
-                  <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center font-bold text-sm transition-all duration-300 ${
-                    isOpen 
-                      ? "bg-primary text-white scale-110" 
-                      : "bg-primary/10 text-primary group-hover:bg-primary/20"
-                  }`}>
-                    {faq.id}
+                  <span className={`font-bold text-xs sm:text-sm leading-snug transition-colors ${isOpen ? "text-[#C9862b]" : "text-stone-800"}`}>
+                    {faq.question}
+                  </span>
+                  <div className={`w-7 h-7 rounded-full bg-stone-100 flex items-center justify-center shrink-0 transition-transform ${isOpen ? "rotate-180 bg-[#1e3831] text-white" : "text-stone-600"}`}>
+                    <ChevronDown size={14} />
                   </div>
-
-                  {/* Question Text */}
-                  <div className="flex-1 min-w-0">
-                    <span
-                      style={{ fontFamily: "var(--font-heading, Poppins, sans-serif)" }}
-                      className="font-semibold text-primary text-sm sm:text-base lg:text-lg leading-snug block"
-                    >
-                      {faq.question}
-                    </span>
-                    {/* Category Badge - Mobile */}
-                    <span className="inline-block mt-1.5 sm:mt-2 px-2 py-0.5 text-[10px] sm:text-xs bg-primary/10 text-primary/70 rounded-full">
-                      {faq.category}
-                    </span>
-                  </div>
-
-                  {/* Chevron Icon */}
-                  <ChevronDown
-                    size={20}
-                    className={`sm:w-6 sm:h-6 text-primary transition-transform duration-300 flex-shrink-0 mt-1 ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                  />
                 </button>
 
-                {/* Answer Section */}
                 {isOpen && (
-                  <div 
-                    className="px-4 sm:px-6 py-4 sm:py-5 bg-gradient-to-br from-primary/5 to-transparent border-t border-primary/20"
-                    style={{
-                      animation: 'slideDown 0.3s ease-out forwards'
-                    }}
-                  >
-                    <div className="flex gap-3 sm:gap-4">
-                      {/* Answer Icon */}
-                      <div className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/20 flex items-center justify-center mt-0.5">
-                        <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
-                      </div>
-                      {/* Answer Text */}
-                      <p className="text-primary/80 leading-relaxed text-xs sm:text-sm lg:text-base flex-1">
-                        {faq.answer}
-                      </p>
-                    </div>
+                  <div className="px-4 sm:px-5 pb-5 pt-1 text-xs sm:text-sm text-stone-600 leading-relaxed border-t border-stone-100">
+                    {faq.answer}
                   </div>
                 )}
               </div>
@@ -175,66 +100,37 @@ export function FAQSection() {
           })}
         </div>
 
-        {/* Contact CTA */}
-        <div className="mt-8 sm:mt-12 p-5 sm:p-8 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary/10 to-primary/5 border-2 border-primary/30 text-center">
-          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-primary mb-2 sm:mb-3">
-            Still have questions?
-          </h3>
-          <p className="text-primary/70 text-xs sm:text-sm mb-4 sm:mb-6">
-            Our team is here to help you. Get in touch with us for personalized assistance.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button 
-              onClick={() => {
-                const element = document.getElementById("contact")
-                if (element) element.scrollIntoView({ behavior: "smooth" })
-              }}
-              className="px-6 sm:px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold text-sm sm:text-base transition-all hover:scale-105 shadow-lg"
-            >
-              Contact Us
-            </button>
+        {/* Assistance Card */}
+        <div className="p-4 sm:p-6 rounded-2xl bg-white border border-stone-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div>
+            <h4 className="text-sm sm:text-base font-bold text-stone-900 mb-0.5">
+              Still have questions about Mahalaxmi Nagar 51?
+            </h4>
+            <p className="text-xs text-stone-500">
+              Speak directly with representative Nitesh P Duratkar (+91 9890072355).
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
             <a
               href="tel:+919890072355"
-              className="px-6 sm:px-8 py-3 bg-white/10 hover:bg-white/20 border-2 border-primary/30 text-primary rounded-xl font-semibold text-sm sm:text-base transition-all hover:scale-105"
+              className="px-4 py-2.5 rounded-xl bg-[#1e3831] hover:bg-[#284a42] text-white text-xs font-bold transition-colors flex items-center gap-1.5"
             >
-              Call Now
+              <Phone size={13} className="text-[#C9862b]" />
+              Call Direct
+            </a>
+            <a
+              href="https://wa.me/919890072355?text=Hi%20Nitesh%20ji%2C%20I%20have%20questions%20about%20Mahalaxmi%20Nagar%2051%20Anaya."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2.5 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-bold transition-colors flex items-center gap-1.5"
+            >
+              <MessageSquare size={13} className="text-emerald-600" />
+              WhatsApp
             </a>
           </div>
         </div>
+
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            max-height: 0;
-          }
-          to {
-            opacity: 1;
-            max-height: 500px;
-          }
-        }
-
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   )
 }

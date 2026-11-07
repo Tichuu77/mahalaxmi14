@@ -1,282 +1,340 @@
 "use client"
 
-import { useState } from "react"
-import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react"
+import { useState, useCallback, memo, useRef } from "react"
+import { useRouter } from "next/navigation"
+import { Mail, Phone, MapPin, Send, CheckCircle, ShieldCheck, UserCheck, MessageSquare, Calendar } from "lucide-react"
+import {
+  normalizePhone10,
+  isBlockedOrFakePhone10,
+  hasSubmittedThisPhone,
+  recordSubmittedPhone,
+  validateFillDuration,
+} from "@/lib/form-protection"
+
+type FormState = { name: string; mobile: string; plotCategory: string; visitDate: string }
+const EMPTY_FORM: FormState = { name: "", mobile: "", plotCategory: "Executive Villa Plot (1,130 - 1,500 Sq.Ft)", visitDate: "" }
+const COOLDOWN_MS = 12 * 60 * 60 * 1000
+type SubmitStatus = "idle" | "error" | "rateLimit" | "spam" | "timing" | "interaction" | "phone" | "duplicatePhone"
 
 export default function ContactSection() {
-  const [formState, setFormState] = useState({
-    name: "",
-    email: "",
-    message: "",
-  })
+  const router = useRouter()
+  const [formState, setFormState] = useState<FormState>(EMPTY_FORM)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle")
+  const [honeypot, setHoneypot] = useState("")
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormState({
-      ...formState,
-      [e.target.name]: e.target.value,
-    })
-  }
+  const formStartedAtRef = useRef<number | null>(null)
+  const humanRef = useRef(false)
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const markFormStarted = useCallback(() => {
+    if (formStartedAtRef.current === null) formStartedAtRef.current = Date.now()
+  }, [])
+
+  const markHuman = useCallback(() => {
+    humanRef.current = true
+  }, [])
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    markFormStarted()
+    markHuman()
+    const { name, value } = e.target
+    setFormState(prev => ({ ...prev, [name]: value }))
+  }, [markFormStarted, markHuman])
+
+  const handleMobileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    markFormStarted()
+    markHuman()
+    const raw = e.target.value.replace(/\D/g, "").slice(0, 10)
+    setFormState(prev => ({ ...prev, mobile: raw }))
+  }, [markFormStarted, markHuman])
+
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitStatus("idle")
 
-    // Validate required fields
-    if (!formState.name || !formState.email ||   !formState.message) {
-      setSubmitStatus("error")
-      setIsSubmitting(false)
-      setTimeout(() => setSubmitStatus("idle"), 3000)
+    if (typeof window !== "undefined") {
+      const alreadySubmitted = localStorage.getItem("formSubmitted") === "true"
+      const submittedAt = parseInt(localStorage.getItem("formSubmittedAt") || "0", 10)
+      if (alreadySubmitted && Date.now() - submittedAt < COOLDOWN_MS) {
+        setSubmitStatus("rateLimit")
+        return
+      }
+    }
+
+    if (honeypot.trim() !== "") {
+      setSubmitStatus("spam")
       return
     }
 
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formState),
-      })
+    if (!humanRef.current || !validateFillDuration(formStartedAtRef.current)) {
+      setSubmitStatus("timing")
+      return
+    }
 
-      if (res.ok) {
-        setSubmitStatus("success")
-        setFormState({ name: "", email: "",   message: "" })
-        setTimeout(() => setSubmitStatus("idle"), 5000)
-      } else {
-        setSubmitStatus("error")
-        setTimeout(() => setSubmitStatus("idle"), 3000)
-      }
-    } catch (error) {
-      console.error(error)
+    const name = (formState.name || "").trim()
+    const mobile = (formState.mobile || "").trim()
+    const plotCategory = (formState.plotCategory || "").trim()
+    const visitDate = (formState.visitDate || "").trim()
+    const phone10 = normalizePhone10(mobile)
+
+    if (!name || !mobile) {
       setSubmitStatus("error")
-      setTimeout(() => setSubmitStatus("idle"), 3000)
+      return
+    }
+
+    if (isBlockedOrFakePhone10(phone10)) {
+      setSubmitStatus("phone")
+      return
+    }
+
+    if (hasSubmittedThisPhone(phone10)) {
+      setSubmitStatus("duplicatePhone")
+      return
+    }
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("formSubmitted", "true")
+      localStorage.setItem("formSubmittedAt", String(Date.now()))
+    }
+
+    setIsSubmitting(true)
+    setSubmitStatus("idle")
+
+    try {
+      const formData = new FormData()
+      formData.append("access_key", "7a6bc102-dcc3-4f79-a088-0a0f5bd21923")
+      formData.append("name", name)
+      formData.append("subject", `New Inquiry: Mahalaxmi Nagar 51 (${plotCategory})`)
+      formData.append("message", `Project: Mahalaxmi Nagar 51 (Anaya)\nName: ${name}\nMobile: ${phone10}\nPlot Category: ${plotCategory}\nNotes/Date: ${visitDate}\nAssigned Desk: Nitesh P Duratkar (+91 9890072355)`)
+
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      })
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        recordSubmittedPhone(phone10)
+        setFormState(EMPTY_FORM)
+        router.push("/thank-you")
+      } else {
+        recordSubmittedPhone(phone10)
+        router.push("/thank-you")
+      }
+    } catch {
+      router.push("/thank-you")
     } finally {
       setIsSubmitting(false)
     }
-  }
+  }, [formState, router, honeypot])
 
   return (
-    <section id="contact" className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-background to-background/80 relative overflow-hidden">
-      {/* Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-primary/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-primary/5 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2" />
-      </div>
+    <section id="contact" className="py-14 sm:py-20 bg-white">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-10 sm:mb-12 lg:mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-4">
-            <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-            <span
-              style={{ fontFamily: "var(--font-heading)" }}
-              className="text-primary font-semibold text-xs sm:text-sm uppercase tracking-wider"
-            >
-              Get in Touch
-            </span>
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C9862b]/15 text-[#a86a1a] text-xs font-bold uppercase tracking-wider mb-2">
+            <Calendar size={12} className="text-[#C9862b]" />
+            DIRECT DEVELOPER BOOKING
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-3 sm:mb-4">
-            Contact Us
+          <h2
+            className="text-2xl sm:text-4xl font-extrabold text-[#1e3831] leading-tight mb-2"
+            style={{ fontFamily: "'Poppins', sans-serif" }}
+          >
+            Schedule a Free Site Visit &amp; <span style={{ color: "#C9862b" }}>Get Cost Sheet</span>
           </h2>
-          <p className="text-primary/60 text-base sm:text-lg max-w-2xl mx-auto px-4">
-            Have a question or ready to get started? We'd love to hear from you.
+          <p className="text-xs sm:text-sm text-stone-600">
+            Direct developer sales desk with zero brokerage and transparent plot pricing.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-8 lg:gap-10">
-          {/* Contact Information - Left Side */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-5">
-            {/* Contact Cards */}
-            <a 
-              href="tel:+919890072355"
-              className="group flex items-start gap-4 p-4 sm:p-5 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 rounded-2xl border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
-            >
-              <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-primary flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
-                <Phone size={22} className="sm:w-6 sm:h-6" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3
-                  style={{ fontFamily: "var(--font-heading)" }}
-                  className="font-bold text-primary text-sm sm:text-base mb-1"
-                >
-                  Phone
-                </h3>
-                <p className="text-primary/70 group-hover:text-primary transition-colors text-sm sm:text-base">
-                 +91 9890072355
-                </p>
-                <p className="text-primary/40 text-xs mt-1">Available Mon-Fri, 9am-6pm</p>
-              </div>
-            </a>
+        {/* 2-Column Grid */}
+        <div className="grid lg:grid-cols-[1fr_1.3fr] gap-8 lg:gap-12 items-start">
 
-            <a 
-              href="mailto:niteshduratkar722@gmail.com"
-              className="group flex items-start gap-4 p-4 sm:p-5 bg-gradient-to-br from-primary/5 to-primary/10 hover:from-primary/10 hover:to-primary/15 rounded-2xl border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
-            >
-              <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-primary flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
-                <Mail size={22} className="sm:w-6 sm:h-6" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3
-                  style={{ fontFamily: "var(--font-heading)" }}
-                  className="font-bold text-primary text-sm sm:text-base mb-1"
-                >
-                  Email
+          {/* Left: Contact Card */}
+          <div className="rounded-2xl p-6 sm:p-8 bg-stone-50 border border-stone-200">
+            <div className="flex items-center gap-3 pb-5 border-b border-stone-200">
+              <img
+                src="/Malaxmi-Final-Logo.-2png.png"
+                alt="Mahalaxmi Infra Logo"
+                className="w-12 h-12 object-contain"
+              />
+              <div>
+                <span className="text-[10px] font-bold text-[#C9862b] uppercase tracking-wider block">
+                  OFFICIAL DEVELOPER REPRESENTATIVE
+                </span>
+                <h3 className="text-lg font-extrabold text-stone-900 leading-tight">
+                  Nitesh P Duratkar
                 </h3>
-                <p className="text-primary/70 group-hover:text-primary transition-colors text-sm sm:text-base break-all">
-                 niteshduratkar722@gmail.com
-                </p>
-                <p className="text-primary/40 text-xs mt-1">We'll respond within 24 hours</p>
-              </div>
-            </a>
-
-            <div className="group flex items-start gap-4 p-4 sm:p-5 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border border-primary/10">
-              <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-primary flex items-center justify-center text-white">
-                <MapPin size={22} className="sm:w-6 sm:h-6" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3
-                  style={{ fontFamily: "var(--font-heading)" }}
-                  className="font-bold text-primary text-sm sm:text-base mb-1"
-                >
-                  Address
-                </h3>
-                <p className="text-primary/70 text-sm sm:text-base">
-                  Nagpur, Maharashtra<br />India 441106
-                </p>
+                <p className="text-xs text-stone-500">Mahalaxmi Infra Direct Desk</p>
               </div>
             </div>
 
-            {/* Trust Badges */}
-            <div className="hidden lg:block pt-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-xl">
-                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                  <span className="text-xs text-primary/70">Quick Response</span>
-                </div>
-                <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-xl">
-                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                  <span className="text-xs text-primary/70">Free Consultation</span>
-                </div>
+            <div className="py-5 space-y-3 text-xs">
+              <div className="flex justify-between pb-2 border-b border-stone-200/60">
+                <span className="text-stone-500">Project MahaRERA:</span>
+                <span className="font-bold text-[#1e3831]">PP1190002602003</span>
               </div>
+              <div className="flex justify-between pb-2 border-b border-stone-200/60">
+                <span className="text-stone-500">Agent MahaRERA:</span>
+                <span className="font-bold text-[#1e3831]">A50400041466</span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-stone-200/60">
+                <span className="text-stone-500">Official Phone:</span>
+                <a href="tel:+919890072355" className="font-bold text-[#C9862b] hover:underline">
+                  +91 9890072355
+                </a>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-stone-200/60">
+                <span className="text-stone-500">Email ID:</span>
+                <a href="mailto:niteshduratkar722@gmail.com" className="font-medium text-stone-800 hover:underline">
+                  niteshduratkar722@gmail.com
+                </a>
+              </div>
+              <div className="pt-1 text-stone-600 leading-relaxed text-[11px]">
+                <strong>Site Location:</strong> Mouza Sumthana, Touching Samruddhi Mahamarg Corridor, Nagpur (441106)
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 pt-2">
+              <a
+                href="tel:+919890072355"
+                className="py-2.5 rounded-xl bg-[#1e3831] text-white text-xs font-bold hover:bg-[#284a42] transition-colors flex items-center justify-center gap-1.5"
+              >
+                <Phone size={13} className="text-[#C9862b]" />
+                Call Desk
+              </a>
+              <a
+                href="https://wa.me/919890072355?text=Hi%20Nitesh%20ji%2C%20I%20am%20interested%20in%20Mahalaxmi%20Nagar%2051%20Anaya."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2.5 rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-800 text-xs font-bold hover:bg-emerald-100 transition-colors flex items-center justify-center gap-1.5"
+              >
+                <MessageSquare size={13} className="text-emerald-600" />
+                WhatsApp
+              </a>
             </div>
           </div>
 
-          {/* Contact Form - Right Side */}
-          <div className="lg:col-span-3">
-            <div className="bg-background/60 backdrop-blur-sm border-2 border-primary/20 p-5 sm:p-6 lg:p-8 rounded-3xl shadow-xl">
-              {submitStatus === "success" ? (
-                <div className="py-12 sm:py-16 text-center">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary/20 border-2 border-primary/50 flex items-center justify-center mx-auto mb-4 sm:mb-6">
-                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-primary mb-2">Message Sent Successfully!</h3>
-                  <p className="text-primary/60 text-sm sm:text-base">We'll get back to you as soon as possible.</p>
+          {/* Right: Clean Inquiry Form */}
+          <div className="rounded-2xl p-6 sm:p-8 bg-white border border-stone-200 shadow-sm">
+            <h3 className="text-lg font-bold text-stone-900 mb-1">
+              Request Anaya Layout &amp; Pricing Breakdown
+            </h3>
+            <p className="text-xs text-stone-500 mb-5">
+              Fill in your details to receive the official masterplan PDF and price sheet.
+            </p>
+
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4"
+              onPointerDownCapture={markHuman}
+              onKeyDownCapture={markHuman}
+              onFocusCapture={markHuman}
+            >
+              {/* Honeypot */}
+              <input
+                type="text"
+                name="b_phone"
+                tabIndex={-1}
+                autoComplete="new-password"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
+                aria-hidden="true"
+              />
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="name" className="block text-xs font-bold text-stone-700 uppercase mb-1">
+                    Your Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formState.name}
+                    onChange={handleChange}
+                    required
+                    placeholder="e.g. Rahul Sharma"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-stone-50 text-stone-900 text-sm focus:border-[#C9862b] focus:bg-white focus:outline-none transition-colors"
+                  />
                 </div>
-              ) : (
-                <div className="space-y-4 sm:space-y-5">
-                  {/* Name and Email Row */}
-                  <div className="grid sm:grid-cols-2 gap-4 sm:gap-5">
-                    <div>
-                      <label htmlFor="name" className="block text-primary font-semibold mb-2 text-sm">
-                        Full Name <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formState.name}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 sm:py-3.5 bg-primary/5 border-2 border-primary/20 rounded-xl text-primary placeholder:text-primary/40 focus:border-primary focus:outline-none transition-all text-sm sm:text-base"
-                        placeholder="John Doe"
-                      />
-                    </div>
 
-                    <div>
-                      <label htmlFor="email" className="block text-primary font-semibold mb-2 text-sm">
-                        Email Address <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formState.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 sm:py-3.5 bg-primary/5 border-2 border-primary/20 rounded-xl text-primary placeholder:text-primary/40 focus:border-primary focus:outline-none transition-all text-sm sm:text-base"
-                        placeholder="john@example.com"
-                      />
-                    </div>
-                  </div>
+                <div>
+                  <label htmlFor="mobile" className="block text-xs font-bold text-stone-700 uppercase mb-1">
+                    Mobile Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="mobile"
+                    name="mobile"
+                    value={formState.mobile}
+                    onChange={handleMobileChange}
+                    required
+                    placeholder="+91 9XXXXXXXXX"
+                    maxLength={10}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-stone-50 text-stone-900 text-sm focus:border-[#C9862b] focus:bg-white focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
 
-                  
+              <div>
+                <label htmlFor="plotCategory" className="block text-xs font-bold text-stone-700 uppercase mb-1">
+                  Interested Plot Size
+                </label>
+                <select
+                  id="plotCategory"
+                  name="plotCategory"
+                  value={formState.plotCategory}
+                  onChange={handleChange}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-stone-50 text-stone-900 text-sm focus:border-[#C9862b] focus:bg-white focus:outline-none transition-colors"
+                >
+                  <option value="Executive Villa Plot (1,130 - 1,500 Sq.Ft)">Executive Villa Plot (1,130 - 1,500 Sq.Ft)</option>
+                  <option value="Premium Boulevard Plot (1,800 - 2,500 Sq.Ft)">Premium Boulevard Plot (1,800 - 2,500 Sq.Ft)</option>
+                  <option value="Clubhouse Enclave Plot (1,500 - 2,200 Sq.Ft)">Clubhouse Enclave Plot (1,500 - 2,200 Sq.Ft)</option>
+                  <option value="Royal Estate Corner Plot (3,000 - 5,000 Sq.Ft)">Royal Estate Corner Plot (3,000 - 5,000 Sq.Ft)</option>
+                  <option value="Site Visit / General Consultation">General Site Visit &amp; Consultation</option>
+                </select>
+              </div>
 
-                  {/* Message */}
-                  <div>
-                    <label htmlFor="message" className="block text-primary font-semibold mb-2 text-sm">
-                      Message <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formState.message}
-                      onChange={handleChange}
-                      required
-                      rows={5}
-                      className="w-full px-4 py-3 sm:py-3.5 bg-primary/5 border-2 border-primary/20 rounded-xl text-primary placeholder:text-primary/40 focus:border-primary focus:outline-none transition-all resize-none text-sm sm:text-base"
-                      placeholder="Tell us more about your inquiry..."
-                    />
-                  </div>
+              <div>
+                <label htmlFor="visitDate" className="block text-xs font-bold text-stone-700 uppercase mb-1">
+                  Preferred Visit Date / Message (Optional)
+                </label>
+                <input
+                  type="text"
+                  id="visitDate"
+                  name="visitDate"
+                  value={formState.visitDate}
+                  onChange={handleChange}
+                  placeholder="e.g. This Sunday morning or looking for East Facing"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 bg-stone-50 text-stone-900 text-sm focus:border-[#C9862b] focus:bg-white focus:outline-none transition-colors"
+                />
+              </div>
 
-                  {/* Error Message */}
-                  {submitStatus === "error" && (
-                    <div className="p-3 sm:p-4 bg-red-500/10 border-2 border-red-500/30 rounded-xl text-red-400 text-sm flex items-start gap-2">
-                      <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>Please fill in all required fields and try again.</span>
-                    </div>
-                  )}
-
-                  {/* Submit Button */}
-                  <button
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="w-full px-6 py-3.5 sm:py-4 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold text-sm sm:text-base flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Sending Message...
-                      </>
-                    ) : (
-                      <>
-                        <span>Send Message</span>
-                        <Send size={18} />
-                      </>
-                    )}
-                  </button>
-
-                  {/* Mobile Trust Badges */}
-                  <div className="lg:hidden grid grid-cols-2 gap-2 pt-2">
-                    <div className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg">
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                      <span className="text-xs text-primary/70">Quick Response</span>
-                    </div>
-                    <div className="flex items-center gap-2 p-2 bg-primary/5 rounded-lg">
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                      <span className="text-xs text-primary/70">Free Consultation</span>
-                    </div>
-                  </div>
+              {submitStatus === "error" && (
+                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-600">
+                  Please fill in your name and a valid 10-digit mobile number.
                 </div>
               )}
-            </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-[#1e3831] hover:bg-[#284a42] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-95"
+              >
+                {isSubmitting ? "Submitting Request…" : <>Request Instant Layout &amp; Price Sheet <Send size={14} className="text-[#C9862b]" /></>}
+              </button>
+
+              <p className="text-[11px] text-stone-400 text-center">
+                🔒 Direct developer agreement · Zero brokerage · Prompt response
+              </p>
+            </form>
           </div>
+
         </div>
+
       </div>
     </section>
   )

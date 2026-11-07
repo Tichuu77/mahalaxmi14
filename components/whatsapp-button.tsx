@@ -1,24 +1,21 @@
 "use client"
 
 export default function WhatsappButton() {
- const handleInquiry = (projectTitle: string) => {
-    const message = encodeURIComponent(`Inquire for  for more details `)
-    window.open(`https://wa.me/+919890072355?text=${message}`, "_blank")
-  }
+  const url = "https://wa.me/919890072355?text=Hi%2C%20I%20am%20interested%20in%20Mahalaxmi%20Nagar%2051%20Anaya%20plots%20(Mouza%20Sumthana).%20Please%20share%20layout%20and%20pricing%20details."
+
   return (
-    <div className="fixed bottom-8 right-8 z-40">
+    <div className="hidden md:block fixed bottom-8 right-8 z-40">
       <a
-        href="https://wa.me/+919890072355?text=Enquiry for more details"
+        href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="relative group"
+        className="relative group block"
         aria-label="Chat on WhatsApp"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary rounded-full animate-ping opacity-75" />
-
-        <div className="relative w-16 h-16 bg-gradient-to-br from-primary to-primary rounded-full flex items-center justify-center shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110">
+        <div className="absolute inset-0 bg-[#25D366] rounded-full animate-ping opacity-60" />
+        <div className="relative w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
           <svg
-            className="w-8 h-8 text-white"
+            className="w-7 h-7 text-white"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
