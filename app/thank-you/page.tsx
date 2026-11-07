@@ -1,55 +1,103 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { CheckCircle2, Phone, MessageSquare, ArrowLeft, Sparkles, ShieldCheck } from "lucide-react"
 
 export default function ThankYouPage() {
   const router = useRouter()
+  const [countdown, setCountdown] = useState(6)
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("hideContactPopupOnce", "true")
     }
 
-    const timer = setTimeout(() => {
-      router.push("/")
-    }, 3000)
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval)
+          router.push("/")
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
 
-    return () => clearTimeout(timer)
+    return () => clearInterval(interval)
   }, [router])
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-6" style={{ background: "linear-gradient(180deg, #f8fbfa 0%, #ffffff 100%)" }}>
-      <div className="max-w-lg w-full text-center rounded-3xl p-8 sm:p-10" style={{ border: "1px solid rgba(48,83,74,0.12)", boxShadow: "0 20px 60px rgba(48,83,74,0.12)", background: "#fff" }}>
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: "#30534A" }}>
-          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
+    <main className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-stone-50">
+      <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl border border-stone-200 p-6 sm:p-10 text-center relative overflow-hidden">
+        
+        {/* Decorative Top Accent */}
+        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#1e3831] via-[#C9862b] to-[#1e3831]" />
+
+        {/* Success Icon */}
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-50 border-4 border-emerald-100 flex items-center justify-center mx-auto mb-5 text-emerald-600">
+          <CheckCircle2 size={40} className="stroke-[2.5]" />
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-bold mb-3" style={{ color: "#0d0d0d", fontFamily: "'Poppins', sans-serif" }}>
-          Thank You!
+        {/* RERA Badge */}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C9862b]/15 text-[#a86a1a] text-xs font-bold uppercase tracking-wider mb-3">
+          <Sparkles size={12} className="text-[#C9862b]" />
+          MAHARERA PP1190002602003 · NMRDA
+        </div>
+
+        {/* Heading */}
+        <h1
+          className="text-2xl sm:text-3xl font-extrabold text-[#1e3831] leading-tight mb-2"
+          style={{ fontFamily: "'Poppins', sans-serif" }}
+        >
+          Thank You! <span style={{ color: "#C9862b" }}>Request Received</span>
         </h1>
-        <p className="text-sm sm:text-base mb-6" style={{ color: "#666", fontFamily: "'Inter', sans-serif" }}>
-          Your form has been submitted successfully. We will contact you shortly.
-        </p>
-        <p className="text-xs sm:text-sm" style={{ color: "#888", fontFamily: "'Inter', sans-serif" }}>
-          Redirecting to home in 3 seconds…
+
+        <p className="text-xs sm:text-sm text-stone-600 mb-6 leading-relaxed">
+          We have received your inquiry for <strong>Mahalaxmi Nagar 51 (Anaya)</strong>. Our representative <strong>Nitesh P Duratkar</strong> will share the cost sheet, layout map, and schedule your free VIP site visit shortly.
         </p>
 
-        <Link
-          href="/"
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              sessionStorage.setItem("hideContactPopupOnce", "true")
-            }
-          }}
-          className="inline-block mt-6 text-sm font-semibold"
-          style={{ color: "#30534A", textDecoration: "underline" }}
-        >
-          Go to home now
-        </Link>
+        {/* Direct Connect Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
+          <a
+            href="https://wa.me/919890072355?text=Hi%20Nitesh%20ji%2C%20I%20just%20submitted%20my%20inquiry%20for%20Mahalaxmi%20Nagar%2051.%20Please%20share%20the%20cost%20sheet%20and%20layout."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95"
+          >
+            <MessageSquare size={16} />
+            Chat on WhatsApp
+          </a>
+
+          <a
+            href="tel:+919890072355"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#1e3831] hover:bg-[#284940] text-white text-xs sm:text-sm font-bold shadow-md transition-all active:scale-95"
+          >
+            <Phone size={15} />
+            Call +91 9890072355
+          </a>
+        </div>
+
+        {/* Countdown & Return */}
+        <div className="pt-4 border-t border-stone-100 flex flex-col items-center gap-2">
+          <span className="text-[11px] text-stone-400">
+            Automatically redirecting to website in {countdown}s…
+          </span>
+          <Link
+            href="/"
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                sessionStorage.setItem("hideContactPopupOnce", "true")
+              }
+            }}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#a86a1a] hover:text-[#1e3831] transition-colors"
+          >
+            <ArrowLeft size={13} />
+            Return to Homepage Now
+          </Link>
+        </div>
+
       </div>
     </main>
   )

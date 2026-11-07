@@ -18,6 +18,7 @@ const Footer = dynamic(() => import("@/components/footer").then(m => ({ default:
 const CallButton = dynamic(() => import("@/components/call-button"))
 const WhatsappButton = dynamic(() => import("@/components/whatsapp-button"))
 const MobileAppBar = dynamic(() => import("@/components/mobile-app-bar").then(m => ({ default: m.MobileAppBar })))
+const ContactPopup = dynamic(() => import("@/components/contact-popup").then(m => ({ default: m.ContactPopup })))
 
 export default function Home() {
   return (
@@ -38,6 +39,7 @@ export default function Home() {
       <CallButton />
       <WhatsappButton />
       <MobileAppBar />
+      <ContactPopup />
     </main>
   )
 }
